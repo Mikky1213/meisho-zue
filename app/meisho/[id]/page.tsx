@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { supabase } from '../../../src/lib/supabase'
@@ -7,6 +8,104 @@ type Props = {
   params: Promise<{
     id: string
   }>
+}
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { id } = await params
+  const entryId = Number(id)
+
+  if (!Number.isInteger(entryId)) {
+    return {
+      title: '名所',
+    }
+  }
+
+  const {
+    data: entry,
+    error: entryError,
+  } = await supabase
+    .from('entries')
+    .select(`
+      id,
+      work_id,
+      heading,
+      reading
+    `)
+    .eq('id', entryId)
+    .single()
+
+  if (entryError || !entry) {
+    return {
+      title: '名所',
+    }
+  }
+
+  const {
+    data: work,
+  } = await supabase
+    .from('works')
+    .select(`
+      id,
+      title
+    `)
+    .eq('id', entry.work_id)
+    .single()
+
+  const currentPlace =
+    currentPlaces[entryId]
+
+  const workTitle =
+    work?.title ?? '名所図会'
+
+  const description =
+    currentPlace?.description
+      ? `${workTitle}「${entry.heading}」。${currentPlace.description}`
+      : `${workTitle}に記された「${entry.heading}」の原文と現在の姿を紹介します。`
+
+  const firstPhoto =
+    currentPlace?.photos?.[0]
+
+  return {
+    title: entry.heading,
+    description,
+
+    alternates: {
+      canonical: `/meisho/${entryId}`,
+    },
+
+    openGraph: {
+      type: 'article',
+      locale: 'ja_JP',
+      url: `/meisho/${entryId}`,
+      siteName: '名所図会 今昔',
+      title: entry.heading,
+      description,
+      images: firstPhoto
+        ? [
+            {
+              url: firstPhoto.url,
+              alt:
+                firstPhoto.alt ||
+                firstPhoto.caption ||
+                entry.heading,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: firstPhoto
+        ? 'summary_large_image'
+        : 'summary',
+      title: entry.heading,
+      description,
+      images: firstPhoto
+        ? [firstPhoto.url]
+        : undefined,
+    },
+  }
 }
 
 export default async function MeishoPage({
@@ -39,9 +138,9 @@ export default async function MeishoPage({
     .eq('id', entryId)
     .single()
 
-if (entryError || !entry) {
-  notFound()
-}
+  if (entryError || !entry) {
+    notFound()
+  }
 
   const currentPlace =
     currentPlaces[entryId]
