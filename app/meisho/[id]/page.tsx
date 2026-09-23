@@ -145,6 +145,21 @@ export default async function MeishoPage({
   const currentPlace =
     currentPlaces[entryId]
 
+  const mapQuery =
+    currentPlace?.address ||
+    currentPlace?.currentName ||
+    ''
+
+  const googleMapsSearchUrl =
+    mapQuery
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+      : null
+
+  const googleMapsEmbedUrl =
+    mapQuery
+      ? `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`
+      : null
+
   // ------------------------------
   // 作品情報
   // ------------------------------
@@ -394,23 +409,44 @@ export default async function MeishoPage({
         color: '#292722',
       }}
     >
-      {/* 一覧へ戻る */}
-      <div
+      {/* パンくず */}
+      <nav
+        aria-label="パンくず"
         style={{
-          marginBottom: '32px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '7px',
+          marginBottom: '28px',
+          color: '#817a70',
+          fontSize: '0.84rem',
         }}
       >
         <Link
-          href="/meisho"
+          href="/"
           style={{
-            color: '#777',
+            color: 'inherit',
             textDecoration: 'none',
-            fontSize: '0.9rem',
           }}
         >
-          ← 名所一覧
+          ホーム
         </Link>
-      </div>
+
+        <span aria-hidden="true">›</span>
+
+        <Link
+          href="/meisho"
+          style={{
+            color: 'inherit',
+            textDecoration: 'none',
+          }}
+        >
+          名所一覧
+        </Link>
+
+        <span aria-hidden="true">›</span>
+
+        <span>{entry.heading}</span>
+      </nav>
 
       {/* 記事ヘッダー */}
       <header
@@ -471,8 +507,93 @@ export default async function MeishoPage({
         )}
       </header>
 
+      {/* ページ内目次 */}
+      <nav
+        aria-label="ページ内目次"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '10px',
+          marginBottom: '48px',
+          padding: '16px 18px',
+          border: '1px solid #ddd7cd',
+          borderRadius: '8px',
+          background: '#faf8f3',
+        }}
+      >
+        <a
+          href="#original"
+          style={{
+            color: '#575149',
+            textDecoration: 'none',
+            fontSize: '0.88rem',
+          }}
+        >
+          原文
+        </a>
+
+        {currentPlace?.translation &&
+          currentPlace.translation.length > 0 && (
+            <>
+              <span
+                aria-hidden="true"
+                style={{ color: '#b2aaa0' }}
+              >
+                ／
+              </span>
+
+              <a
+                href="#translation"
+                style={{
+                  color: '#575149',
+                  textDecoration: 'none',
+                  fontSize: '0.88rem',
+                }}
+              >
+                現代語訳
+              </a>
+            </>
+          )}
+
+        <span
+          aria-hidden="true"
+          style={{ color: '#b2aaa0' }}
+        >
+          ／
+        </span>
+
+        <a
+          href="#current"
+          style={{
+            color: '#575149',
+            textDecoration: 'none',
+            fontSize: '0.88rem',
+          }}
+        >
+          現在の姿
+        </a>
+
+        <span
+          aria-hidden="true"
+          style={{ color: '#b2aaa0' }}
+        >
+          ／
+        </span>
+
+        <a
+          href="#comparison"
+          style={{
+            color: '#575149',
+            textDecoration: 'none',
+            fontSize: '0.88rem',
+          }}
+        >
+          名所図会との比較
+        </a>
+      </nav>
+
       {/* 原文 */}
-      <section>
+      <section id="original">
         <div
           style={{
             display: 'flex',
@@ -699,6 +820,7 @@ export default async function MeishoPage({
       {currentPlace?.translation &&
         currentPlace.translation.length > 0 && (
           <section
+            id="translation"
             style={{
               marginTop: '64px',
               paddingTop: '40px',
@@ -775,6 +897,7 @@ export default async function MeishoPage({
         )}
       {/* 現在の姿 */}
       <section
+        id="current"
         style={{
           marginTop: '64px',
           paddingTop: '40px',
@@ -853,9 +976,21 @@ export default async function MeishoPage({
                     所在地
                   </strong>
 
-                  {
+                  {googleMapsSearchUrl ? (
+                    <a
+                      href={googleMapsSearchUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        color: '#445b54',
+                        textUnderlineOffset: '3px',
+                      }}
+                    >
+                      {currentPlace.address}
+                    </a>
+                  ) : (
                     currentPlace.address
-                  }
+                  )}
                 </div>
               )}
 
@@ -872,6 +1007,52 @@ export default async function MeishoPage({
                   }
                 </p>
               )}
+
+              {currentPlace.address &&
+                googleMapsEmbedUrl && (
+                  <div
+                    style={{
+                      marginTop: '24px',
+                    }}
+                  >
+                    <iframe
+                      title={`${currentPlace.currentName}の地図`}
+                      src={googleMapsEmbedUrl}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        height: '320px',
+                        border: 0,
+                        borderRadius: '8px',
+                        background: '#e7ece9',
+                      }}
+                    />
+
+                    {googleMapsSearchUrl && (
+                      <div
+                        style={{
+                          marginTop: '9px',
+                          textAlign: 'right',
+                          fontSize: '0.82rem',
+                        }}
+                      >
+                        <a
+                          href={googleMapsSearchUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            color: '#566761',
+                            textUnderlineOffset: '3px',
+                          }}
+                        >
+                          Google マップで開く →
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
 
             {/* 写真 */}
@@ -1150,6 +1331,7 @@ export default async function MeishoPage({
 
       {/* 名所図会との比較 */}
       <section
+        id="comparison"
         style={{
           marginTop: '64px',
           paddingTop: '40px',

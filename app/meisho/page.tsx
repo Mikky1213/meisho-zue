@@ -498,7 +498,7 @@ export default async function MeishoListPage({
             style={{
               display: 'grid',
               gridTemplateColumns:
-                'minmax(220px, 2fr) minmax(160px, 1fr) minmax(160px, 1fr)',
+                'repeat(auto-fit, minmax(220px, 1fr))',
               gap: '12px',
             }}
           >

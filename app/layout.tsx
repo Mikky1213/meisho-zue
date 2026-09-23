@@ -126,7 +126,7 @@ export default function RootLayout({
                 display: "flex",
                 alignItems: "center",
                 flexWrap: "wrap",
-                gap: "8px 24px",
+                gap: "8px 22px",
               }}
             >
               <Link
@@ -149,6 +149,17 @@ export default function RootLayout({
                 }}
               >
                 名所一覧
+              </Link>
+
+              <Link
+                href="/about"
+                style={{
+                  color: "#575149",
+                  textDecoration: "none",
+                  fontSize: "0.9rem",
+                }}
+              >
+                このサイトについて
               </Link>
             </nav>
           </div>
