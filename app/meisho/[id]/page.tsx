@@ -412,35 +412,30 @@ export default async function MeishoPage({
       {/* パンくず */}
       <nav
         aria-label="パンくず"
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '7px',
-          marginBottom: '28px',
-          color: '#817a70',
-          fontSize: '0.84rem',
-        }}
+        className="archive-breadcrumb"
       >
-        <Link
-          href="/"
-          style={{
-            color: 'inherit',
-            textDecoration: 'none',
-          }}
-        >
+        <Link href="/">
           ホーム
         </Link>
 
         <span aria-hidden="true">›</span>
 
+        <Link href="/works">
+          作品一覧
+        </Link>
+
+        <span aria-hidden="true">›</span>
+
+        <Link href={`/works/${work.id}`}>
+          {work.title}
+        </Link>
+
+        <span aria-hidden="true">›</span>
+
         <Link
-          href="/meisho"
-          style={{
-            color: 'inherit',
-            textDecoration: 'none',
-          }}
+          href={`/works/${work.id}/volumes/${volume.id}`}
         >
-          名所一覧
+          {volume.volume_label}
         </Link>
 
         <span aria-hidden="true">›</span>
@@ -465,7 +460,15 @@ export default async function MeishoPage({
             letterSpacing: '0.04em',
           }}
         >
-          <span>{work.title}</span>
+          <Link
+            href={`/works/${work.id}`}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            {work.title}
+          </Link>
 
           <span
             style={{
@@ -476,9 +479,15 @@ export default async function MeishoPage({
             ／
           </span>
 
-          <span>
+          <Link
+            href={`/works/${work.id}/volumes/${volume.id}`}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
             {volume.volume_label}
-          </span>
+          </Link>
         </div>
 
         <h1

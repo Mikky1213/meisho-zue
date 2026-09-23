@@ -1,0 +1,225 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-wrap: anywhere;
+}
+
+img,
+iframe {
+  max-width: 100%;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid #ddd7cd;
+  background: rgba(250, 248, 243, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.site-header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 15px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+}
+
+.site-brand {
+  color: #292722;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+.site-brand-title {
+  font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN",
+    "Noto Serif JP", serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.site-brand-subtitle {
+  margin-top: 2px;
+  color: #8b8275;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+.site-nav a {
+  color: #575149;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.site-nav a:hover,
+.site-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.site-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.site-footer {
+  margin-top: auto;
+  border-top: 1px solid #ddd7cd;
+  background: #f5f2ec;
+}
+
+.site-footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 34px 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px 32px;
+  align-items: flex-start;
+}
+
+.site-footer-title {
+  font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN",
+    "Noto Serif JP", serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.site-footer-copy {
+  margin-top: 7px;
+  color: #817a70;
+  font-size: 0.76rem;
+  line-height: 1.7;
+}
+
+.site-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 20px;
+}
+
+.site-footer-nav a {
+  color: #625b53;
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+
+.archive-page {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 64px 24px 104px;
+  color: #292722;
+}
+
+.archive-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 28px;
+  color: #817a70;
+  font-size: 0.84rem;
+}
+
+.archive-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.archive-page-title {
+  margin: 0;
+  font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN",
+    "Noto Serif JP", serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.archive-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.archive-card {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 23px 24px;
+  border: 1px solid #ddd8ce;
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+}
+
+.archive-card:hover {
+  border-color: #b9ae9b;
+  background: #fffdf8;
+}
+
+@media (max-width: 720px) {
+  .site-header-inner {
+    padding: 12px 16px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-brand-title {
+    font-size: 1.1rem;
+  }
+
+  .site-nav {
+    width: 100%;
+    gap: 7px 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .site-nav a {
+    white-space: nowrap;
+    font-size: 0.84rem;
+  }
+
+  .site-footer-inner {
+    padding: 28px 18px;
+    flex-direction: column;
+  }
+
+  .archive-page {
+    padding: 42px 18px 80px;
+  }
+
+  .archive-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  main {
+    min-width: 0;
+  }
+
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  iframe {
+    height: 260px !important;
+  }
+}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./site.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,109 +70,82 @@ export default function RootLayout({
           color: "#292722",
         }}
       >
-        <header
-          style={{
-            position: "relative",
-            zIndex: 20,
-            borderBottom: "1px solid #ddd7cd",
-            background: "rgba(250,248,243,0.96)",
-          }}
-        >
-          <div
-            style={{
-              maxWidth: "1080px",
-              margin: "0 auto",
-              padding: "15px 24px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "14px 24px",
-            }}
-          >
+        <header className="site-header">
+          <div className="site-header-inner">
             <Link
               href="/"
-              style={{
-                color: "#292722",
-                textDecoration: "none",
-              }}
+              className="site-brand"
             >
-              <div
-                style={{
-                  fontFamily:
-                    '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
-                  fontSize: "1.3rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.08em",
-                }}
-              >
+              <div className="site-brand-title">
                 名所図会 今昔
               </div>
 
-              <div
-                style={{
-                  marginTop: "2px",
-                  color: "#8b8275",
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.14em",
-                }}
-              >
+              <div className="site-brand-subtitle">
                 MEISHO ZUE ARCHIVE
               </div>
             </Link>
 
             <nav
               aria-label="メインナビゲーション"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: "8px 22px",
-              }}
+              className="site-nav"
             >
-              <Link
-                href="/"
-                style={{
-                  color: "#575149",
-                  textDecoration: "none",
-                  fontSize: "0.9rem",
-                }}
-              >
+              <Link href="/">
                 ホーム
               </Link>
 
-              <Link
-                href="/meisho"
-                style={{
-                  color: "#575149",
-                  textDecoration: "none",
-                  fontSize: "0.9rem",
-                }}
-              >
+              <Link href="/works">
+                作品一覧
+              </Link>
+
+              <Link href="/meisho">
                 名所一覧
               </Link>
 
-              <Link
-                href="/about"
-                style={{
-                  color: "#575149",
-                  textDecoration: "none",
-                  fontSize: "0.9rem",
-                }}
-              >
+              <Link href="/about">
                 このサイトについて
               </Link>
             </nav>
           </div>
         </header>
 
-        <div
-          style={{
-            flex: 1,
-          }}
-        >
+        <div className="site-content">
           {children}
         </div>
+
+        <footer className="site-footer">
+          <div className="site-footer-inner">
+            <div>
+              <div className="site-footer-title">
+                名所図会 今昔
+              </div>
+
+              <div className="site-footer-copy">
+                名所図会の原文と現在の風景をたどるアーカイブ
+              </div>
+            </div>
+
+            <nav
+              aria-label="フッターナビゲーション"
+              className="site-footer-nav"
+            >
+              <Link href="/">
+                ホーム
+              </Link>
+
+              <Link href="/works">
+                作品一覧
+              </Link>
+
+              <Link href="/meisho">
+                名所一覧
+              </Link>
+
+              <Link href="/about">
+                このサイトについて
+              </Link>
+            </nav>
+          </div>
+        </footer>
       </body>
     </html>
   );
