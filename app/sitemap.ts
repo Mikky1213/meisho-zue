@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { supabase } from '../src/lib/supabase'
 import { currentPlaces } from '../src/data/currentPlaces'
+import { regions } from '../src/data/regions'
 
 const baseUrl = 'https://meisho-zue.vercel.app'
 
@@ -24,6 +25,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/meisho`,
       changeFrequency: 'weekly',
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/regions`,
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/about`,
@@ -101,10 +107,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
     )
 
+  const regionPages: MetadataRoute.Sitemap =
+    regions.map((region) => ({
+      url:
+        `${baseUrl}/regions/${region.slug}`,
+      changeFrequency: 'weekly',
+      priority: 0.75,
+    }))
+
   return [
     ...staticPages,
     ...workPages,
     ...volumePages,
+    ...regionPages,
     ...meishoPages,
   ]
 }

@@ -5,6 +5,7 @@ import { supabase } from '../../../src/lib/supabase'
 import { currentPlaces } from '../../../src/data/currentPlaces'
 import { historicalMedia } from '../../../src/data/historicalMedia'
 import MediaGallery from '../../../src/components/MediaGallery'
+import { getRegionForEntry } from '../../../src/data/regions'
 
 type Props = {
   params: Promise<{
@@ -152,6 +153,9 @@ export default async function MeishoPage({
 
   const currentPlace =
     currentPlaces[entryId]
+
+  const region =
+    getRegionForEntry(entryId)
 
   const historicalImages =
     historicalMedia[entryId] ?? []
@@ -338,6 +342,56 @@ export default async function MeishoPage({
         <pre>{itemsError.message}</pre>
       </main>
     )
+  }
+
+  // ------------------------------
+  // 同じ地域の名所
+  // ------------------------------
+
+  let relatedRegionEntries: {
+    id: number
+    heading: string
+    reading: string | null
+  }[] = []
+
+  if (region) {
+    const relatedIds =
+      region.entryIds.filter(
+        (relatedId) =>
+          relatedId !== entryId &&
+          Boolean(
+            currentPlaces[
+              relatedId
+            ]
+          )
+      )
+
+    if (relatedIds.length > 0) {
+      const {
+        data: relatedEntries,
+      } = await supabase
+        .from('entries')
+        .select(`
+          id,
+          heading,
+          reading,
+          entry_order
+        `)
+        .in('id', relatedIds)
+        .order('entry_order')
+
+      relatedRegionEntries =
+        (relatedEntries ?? []).map(
+          (relatedEntry) => ({
+            id:
+              relatedEntry.id,
+            heading:
+              relatedEntry.heading,
+            reading:
+              relatedEntry.reading,
+          })
+        )
+    }
   }
 
   // ------------------------------
@@ -639,6 +693,31 @@ export default async function MeishoPage({
             {volume.volume_label}
           </Link>
         </div>
+
+        {region && (
+          <div
+            style={{
+              marginBottom: '14px',
+            }}
+          >
+            <Link
+              href={`/regions/${region.slug}`}
+              style={{
+                display: 'inline-block',
+                padding: '5px 10px',
+                border:
+                  '1px solid #d3ccc0',
+                borderRadius: '999px',
+                background: '#faf8f3',
+                color: '#6c645a',
+                fontSize: '0.76rem',
+                textDecoration: 'none',
+              }}
+            >
+              地域：{region.title}
+            </Link>
+          </div>
+        )}
 
         <h1
           style={{
@@ -1714,6 +1793,117 @@ export default async function MeishoPage({
           </div>
         )}
       </section>
+
+      {/* 同じ地域の名所 */}
+      {region &&
+        relatedRegionEntries.length > 0 && (
+          <section
+            style={{
+              marginTop: '64px',
+              paddingTop: '40px',
+              borderTop:
+                '1px solid #d8d2c7',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent:
+                  'space-between',
+                gap: '16px',
+                marginBottom: '22px',
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: '1.35rem',
+                  letterSpacing:
+                    '0.06em',
+                }}
+              >
+                同じ地域の名所
+              </h2>
+
+              <Link
+                href={`/regions/${region.slug}`}
+                style={{
+                  color: '#65716d',
+                  fontSize: '0.82rem',
+                  textDecoration:
+                    'none',
+                }}
+              >
+                {region.title}一覧 →
+              </Link>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns:
+                  'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '12px',
+              }}
+            >
+              {relatedRegionEntries.map(
+                (
+                  relatedEntry
+                ) => (
+                  <Link
+                    key={
+                      relatedEntry.id
+                    }
+                    href={`/meisho/${relatedEntry.id}`}
+                    style={{
+                      padding:
+                        '16px 18px',
+                      border:
+                        '1px solid #ded8ce',
+                      borderRadius:
+                        '8px',
+                      background:
+                        '#fffdf8',
+                      color:
+                        '#292722',
+                      textDecoration:
+                        'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {
+                        relatedEntry.heading
+                      }
+                    </div>
+
+                    {relatedEntry.reading && (
+                      <div
+                        style={{
+                          marginTop:
+                            '4px',
+                          color:
+                            '#918981',
+                          fontSize:
+                            '0.76rem',
+                        }}
+                      >
+                        {
+                          relatedEntry.reading
+                        }
+                      </div>
+                    )}
+                  </Link>
+                )
+              )}
+            </div>
+          </section>
+        )}
 
       {/* 前後の名所 */}
       {(previousEntry || nextEntry) && (

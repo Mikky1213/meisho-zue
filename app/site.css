@@ -487,3 +487,205 @@ iframe {
     right: 6px;
   }
 }
+
+
+/* ==========================================================
+   地域ページ
+   ========================================================== */
+
+.region-progress-summary {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid #ddd7cd;
+  border-radius: 10px;
+  background: #f8f5ef;
+}
+
+.region-progress-summary > div {
+  min-width: 0;
+}
+
+.region-progress-label {
+  margin-bottom: 4px;
+  color: #81796e;
+  font-size: 0.78rem;
+}
+
+.region-progress-number {
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.region-progress-number span {
+  margin-left: 4px;
+  color: #80786d;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.region-entry-list {
+  display: grid;
+  gap: 20px;
+}
+
+.region-entry-card {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 240px)
+    minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #ddd8ce;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.region-entry-photo-link {
+  display: block;
+  min-height: 100%;
+  background: #eee9e0;
+}
+
+.region-entry-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+}
+
+.region-entry-body {
+  min-width: 0;
+  padding: 22px 24px;
+}
+
+.region-entry-meta {
+  margin-bottom: 9px;
+  color: #91897e;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.region-entry-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.region-entry-title {
+  margin: 0;
+  font-family:
+    "Yu Mincho",
+    "YuMincho",
+    "Hiragino Mincho ProN",
+    "Noto Serif JP",
+    serif;
+  font-size: 1.35rem;
+  line-height: 1.45;
+}
+
+.region-entry-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.region-entry-reading {
+  margin-top: 4px;
+  color: #918981;
+  font-size: 0.78rem;
+}
+
+.region-entry-score {
+  flex: 0 0 auto;
+  color: #3f4a45;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.region-entry-score span {
+  color: #918981;
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.region-current-name {
+  margin-top: 14px;
+  color: #65716d;
+  font-size: 0.86rem;
+}
+
+.region-status-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.region-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.region-status-ready {
+  border: 1px solid #b9cec5;
+  background: #f0f6f3;
+  color: #52665e;
+}
+
+.region-status-missing {
+  border: 1px solid #ddd7cd;
+  background: #faf8f4;
+  color: #9a9187;
+}
+
+.region-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 16px;
+  margin-top: 19px;
+  padding-top: 14px;
+  border-top: 1px solid #eee9e1;
+}
+
+.region-entry-actions a {
+  color: #58645e;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.region-entry-actions a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .region-entry-card {
+    grid-template-columns: 1fr;
+  }
+
+  .region-entry-photo {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .region-entry-body {
+    padding: 20px 18px;
+  }
+
+  .region-entry-title-row {
+    gap: 10px;
+  }
+
+  .region-entry-title {
+    font-size: 1.2rem;
+  }
+}

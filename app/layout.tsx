@@ -97,6 +97,10 @@ export default function RootLayout({
                 作品一覧
               </Link>
 
+              <Link href="/regions">
+                地域
+              </Link>
+
               <Link href="/meisho">
                 名所一覧
               </Link>
@@ -134,6 +138,10 @@ export default function RootLayout({
 
               <Link href="/works">
                 作品一覧
+              </Link>
+
+              <Link href="/regions">
+                地域
               </Link>
 
               <Link href="/meisho">
