@@ -174,6 +174,8 @@ function main() {
   const allUrls =
     new Map()
 
+  let draftCount = 0
+
   for (const name of files) {
     const id =
       Number(
@@ -192,10 +194,11 @@ function main() {
     const text =
       read(filePath)
 
-    if (!mapEntries.has(id)) {
-      warning(
-        `未公開記事ファイル: src/data/meisho/${name}`
-      )
+    const isPublished =
+      mapEntries.has(id)
+
+    if (!isPublished) {
+      draftCount += 1
     }
 
     const exportPattern =
@@ -209,45 +212,6 @@ function main() {
       )
     }
 
-    const currentName =
-      extractPropertyString(
-        text,
-        'currentName'
-      )
-
-    const address =
-      extractPropertyString(
-        text,
-        'address'
-      )
-
-    const description =
-      extractPropertyString(
-        text,
-        'description'
-      )
-
-    if (!currentName?.trim()) {
-      warning(
-        `${name}: currentName が空です`
-      )
-    }
-
-    if (!address?.trim()) {
-      warning(
-        `${name}: address が空です`
-      )
-    }
-
-    if (!description?.trim()) {
-      warning(
-        `${name}: description が空です`
-      )
-    }
-
-    // photos は CurrentPlace の必須項目。
-    // translation / documents / comparison は optional のため、
-    // プロパティ自体が無くてもエラーにしない。
     const photosRegex =
       /\bphotos\s*:\s*\[/
 
@@ -255,6 +219,44 @@ function main() {
       error(
         `${name}: photos: [] がありません`
       )
+    }
+
+    if (isPublished) {
+      const currentName =
+        extractPropertyString(
+          text,
+          'currentName'
+        )
+
+      const address =
+        extractPropertyString(
+          text,
+          'address'
+        )
+
+      const description =
+        extractPropertyString(
+          text,
+          'description'
+        )
+
+      if (!currentName?.trim()) {
+        warning(
+          `${name}: currentName が空です`
+        )
+      }
+
+      if (!address?.trim()) {
+        warning(
+          `${name}: address が空です`
+        )
+      }
+
+      if (!description?.trim()) {
+        warning(
+          `${name}: description が空です`
+        )
+      }
     }
 
     for (
@@ -324,22 +326,14 @@ function main() {
     if (
       locations.length > 1
     ) {
-      const unique =
-        [...new Set(locations)]
-
-      if (
-        unique.length > 1 ||
-        locations.length > 1
-      ) {
-        warning(
-          `重複URL: ${url}\n    ${locations.join('\n    ')}`
-        )
-      }
+      warning(
+        `重複URL: ${url}\n    ${locations.join('\n    ')}`
+      )
     }
   }
 
   console.log(
-    `検査対象: 公開 ${mapEntries.size}件 / 記事ファイル ${files.length}件`
+    `検査対象: 公開 ${mapEntries.size}件 / 下書き ${draftCount}件 / 記事ファイル ${files.length}件`
   )
 
   finish()

@@ -14,6 +14,7 @@
     "add-document": "node scripts/add-document.mjs",
     "add-comparison": "node scripts/add-comparison.mjs",
     "add-historical-image": "node scripts/add-historical-image.mjs",
+    "scaffold-all-meisho": "node scripts/scaffold-all-meisho.mjs",
     "validate-content": "node scripts/validate-content.mjs",
     "preflight": "node scripts/validate-content.mjs && node scripts/audit-site.mjs && next build",
     "audit-site": "node scripts/audit-site.mjs",
