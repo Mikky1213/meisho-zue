@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { supabase } from '../../../src/lib/supabase'
 import { currentPlaces } from '../../../src/data/currentPlaces'
+import { historicalMedia } from '../../../src/data/historicalMedia'
+import MediaGallery from '../../../src/components/MediaGallery'
 
 type Props = {
   params: Promise<{
@@ -67,6 +69,12 @@ export async function generateMetadata({
   const firstPhoto =
     currentPlace?.photos?.[0]
 
+  const firstHistoricalImage =
+    historicalMedia[entryId]?.[0]
+
+  const socialImage =
+    firstPhoto ?? firstHistoricalImage
+
   return {
     title: entry.heading,
     description,
@@ -82,13 +90,13 @@ export async function generateMetadata({
       siteName: '名所図会 今昔',
       title: entry.heading,
       description,
-      images: firstPhoto
+      images: socialImage
         ? [
             {
-              url: firstPhoto.url,
+              url: socialImage.url,
               alt:
-                firstPhoto.alt ||
-                firstPhoto.caption ||
+                socialImage.alt ||
+                socialImage.caption ||
                 entry.heading,
             },
           ]
@@ -96,13 +104,13 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card: firstPhoto
+      card: socialImage
         ? 'summary_large_image'
         : 'summary',
       title: entry.heading,
       description,
-      images: firstPhoto
-        ? [firstPhoto.url]
+      images: socialImage
+        ? [socialImage.url]
         : undefined,
     },
   }
@@ -144,6 +152,85 @@ export default async function MeishoPage({
 
   const currentPlace =
     currentPlaces[entryId]
+
+  const historicalImages =
+    historicalMedia[entryId] ?? []
+
+  const historicalGalleryItems =
+    historicalImages.map((image) => ({
+      url: image.url,
+      alt:
+        image.alt ||
+        image.caption,
+      caption: image.caption,
+      meta: [
+        image.source
+          ? `出典：${image.source}`
+          : '',
+        image.page
+          ? `掲載箇所：${image.page}`
+          : '',
+        image.note ?? '',
+      ].filter(Boolean),
+      sourceUrl: image.sourceUrl,
+    }))
+
+  const currentGalleryItems =
+    (currentPlace?.photos ?? []).map(
+      (photo) => ({
+        url: photo.url,
+        alt:
+          photo.alt ||
+          photo.caption ||
+          currentPlace?.currentName ||
+          entry.heading,
+        caption: photo.caption,
+        meta: [
+          photo.takenAt
+            ? `撮影日：${photo.takenAt}`
+            : '',
+          photo.direction
+            ? `撮影方向：${photo.direction}`
+            : '',
+          photo.credit
+            ? `撮影・提供：${photo.credit}`
+            : '',
+        ].filter(Boolean),
+        sourceUrl: photo.sourceUrl,
+      })
+    )
+
+  const visualComparisonItems = [
+    historicalGalleryItems[0]
+      ? {
+          ...historicalGalleryItems[0],
+          caption:
+            `往時：${
+              historicalGalleryItems[0]
+                .caption ||
+              entry.heading
+            }`,
+        }
+      : null,
+    currentGalleryItems[0]
+      ? {
+          ...currentGalleryItems[0],
+          caption:
+            `現在：${
+              currentGalleryItems[0]
+                .caption ||
+              currentPlace?.currentName ||
+              entry.heading
+            }`,
+        }
+      : null,
+  ].filter(
+    (
+      item
+    ): item is NonNullable<
+      typeof item
+    > => item !== null
+  )
 
   const mapQuery =
     currentPlace?.address ||
@@ -264,11 +351,15 @@ export default async function MeishoPage({
   let previousEntry: {
     id: number
     heading: string
+    workTitle: string
+    volumeLabel: string
   } | null = null
 
   let nextEntry: {
     id: number
     heading: string
+    workTitle: string
+    volumeLabel: string
   } | null = null
 
   if (registeredEntryIds.length > 1) {
@@ -300,15 +391,34 @@ export default async function MeishoPage({
         ),
       ]
 
+      const navigationWorkIds = [
+        ...new Set(
+          navigationEntries.map(
+            (item) => item.work_id
+          )
+        ),
+      ]
+
       const {
         data: navigationVolumes,
       } = await supabase
         .from('volumes')
         .select(`
           id,
-          volume_no
+          volume_no,
+          volume_label
         `)
         .in('id', volumeIds)
+
+      const {
+        data: navigationWorks,
+      } = await supabase
+        .from('works')
+        .select(`
+          id,
+          title
+        `)
+        .in('id', navigationWorkIds)
 
       const volumeNoMap = new Map(
         (navigationVolumes ?? []).map(
@@ -316,6 +426,25 @@ export default async function MeishoPage({
             item.id,
             item.volume_no ??
               Number.MAX_SAFE_INTEGER,
+          ]
+        )
+      )
+
+      const volumeLabelMap = new Map(
+        (navigationVolumes ?? []).map(
+          (item) => [
+            item.id,
+            item.volume_label ??
+              '巻未設定',
+          ]
+        )
+      )
+
+      const workTitleMap = new Map(
+        (navigationWorks ?? []).map(
+          (item) => [
+            item.id,
+            item.title,
           ]
         )
       )
@@ -370,14 +499,24 @@ export default async function MeishoPage({
         )
 
       if (currentIndex > 0) {
-        previousEntry = {
-          id: sortedEntries[
+        const previous =
+          sortedEntries[
             currentIndex - 1
-          ].id,
-          heading:
-            sortedEntries[
-              currentIndex - 1
-            ].heading,
+          ]
+
+        previousEntry = {
+          id: previous.id,
+          heading: previous.heading,
+          workTitle:
+            workTitleMap.get(
+              previous.work_id
+            ) ?? '作品',
+          volumeLabel:
+            previous.volume_id !== null
+              ? volumeLabelMap.get(
+                  previous.volume_id
+                ) ?? '巻未設定'
+              : '巻未設定',
         }
       }
 
@@ -386,14 +525,24 @@ export default async function MeishoPage({
         currentIndex <
           sortedEntries.length - 1
       ) {
-        nextEntry = {
-          id: sortedEntries[
+        const next =
+          sortedEntries[
             currentIndex + 1
-          ].id,
-          heading:
-            sortedEntries[
-              currentIndex + 1
-            ].heading,
+          ]
+
+        nextEntry = {
+          id: next.id,
+          heading: next.heading,
+          workTitle:
+            workTitleMap.get(
+              next.work_id
+            ) ?? '作品',
+          volumeLabel:
+            next.volume_id !== null
+              ? volumeLabelMap.get(
+                  next.volume_id
+                ) ?? '巻未設定'
+              : '巻未設定',
         }
       }
     }
@@ -401,7 +550,8 @@ export default async function MeishoPage({
 
   return (
       <main
-      style={{
+        className="meisho-article"
+        style={{
         maxWidth: '960px',
         margin: '0 auto',
         padding: '40px 24px 96px',
@@ -571,6 +721,35 @@ export default async function MeishoPage({
           ／
         </span>
 
+        {historicalImages.length > 0 && (
+          <>
+            <span
+              aria-hidden="true"
+              style={{ color: '#b2aaa0' }}
+            >
+              ／
+            </span>
+
+            <a
+              href="#historical-images"
+              style={{
+                color: '#575149',
+                textDecoration: 'none',
+                fontSize: '0.88rem',
+              }}
+            >
+              歴史画像
+            </a>
+          </>
+        )}
+
+        <span
+          aria-hidden="true"
+          style={{ color: '#b2aaa0' }}
+        >
+          ／
+        </span>
+
         <a
           href="#current"
           style={{
@@ -581,6 +760,29 @@ export default async function MeishoPage({
         >
           現在の姿
         </a>
+
+        {historicalImages.length > 0 &&
+          currentGalleryItems.length > 0 && (
+            <>
+              <span
+                aria-hidden="true"
+                style={{ color: '#b2aaa0' }}
+              >
+                ／
+              </span>
+
+              <a
+                href="#visual-comparison"
+                style={{
+                  color: '#575149',
+                  textDecoration: 'none',
+                  fontSize: '0.88rem',
+                }}
+              >
+                画像で比較
+              </a>
+            </>
+          )}
 
         <span
           aria-hidden="true"
@@ -632,6 +834,7 @@ export default async function MeishoPage({
         </div>
 
         <div
+          className="historical-text-frame"
           style={{
             border:
               '1px solid #9c927f',
@@ -640,6 +843,7 @@ export default async function MeishoPage({
           }}
         >
           <div
+            className="historical-text-body"
             style={{
               border:
                 '1px solid #c8bda9',
@@ -660,6 +864,7 @@ export default async function MeishoPage({
                 return (
                   <div
                     key={item.id}
+                    className="historical-text-block"
                     style={{
                       marginTop:
                         '28px',
@@ -706,6 +911,7 @@ export default async function MeishoPage({
                 return (
                   <h3
                     key={item.id}
+                    className="historical-text-subheading"
                     style={{
                       marginTop:
                         '42px',
@@ -750,6 +956,7 @@ export default async function MeishoPage({
                 return (
                   <div
                     key={item.id}
+                    className="historical-text-depth2"
                     style={{
                       marginLeft:
                         '24px',
@@ -799,6 +1006,7 @@ export default async function MeishoPage({
               return (
                 <div
                   key={item.id}
+                  className="historical-text-block"
                   style={{
                     marginTop: '26px',
                     marginBottom:
@@ -904,6 +1112,63 @@ export default async function MeishoPage({
             </div>
           </section>
         )}
+      {/* 歴史画像 */}
+      {historicalImages.length > 0 && (
+        <section
+          id="historical-images"
+          style={{
+            marginTop: '64px',
+            paddingTop: '40px',
+            borderTop:
+              '1px solid #d7cdbb',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              marginBottom: '28px',
+            }}
+          >
+            <h2
+              style={{
+                margin: 0,
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+              }}
+            >
+              歴史画像
+            </h2>
+
+            <div
+              style={{
+                flex: 1,
+                height: '1px',
+                background: '#d7cdbb',
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              padding: '30px',
+              border:
+                '1px solid #d7cdbb',
+              borderRadius: '10px',
+              background: '#faf6ed',
+            }}
+          >
+            <MediaGallery
+              items={
+                historicalGalleryItems
+              }
+            />
+          </div>
+        </section>
+      )}
+
       {/* 現在の姿 */}
       <section
         id="current"
@@ -1065,7 +1330,7 @@ export default async function MeishoPage({
             </div>
 
             {/* 写真 */}
-            {currentPlace.photos.length >
+            {currentGalleryItems.length >
               0 && (
               <div
                 style={{
@@ -1086,117 +1351,11 @@ export default async function MeishoPage({
                   現地写真
                 </h3>
 
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                      'repeat(auto-fit, minmax(240px, 1fr))',
-                    gap: '20px',
-                  }}
-                >
-                  {currentPlace.photos.map(
-                    (
-                      photo,
-                      index
-                    ) => (
-                      <figure
-                        key={`${photo.url}-${index}`}
-                        style={{
-                          margin: 0,
-                        }}
-                      >
-                        <img
-                          src={
-                            photo.url
-                          }
-                          alt={
-                            photo.alt ||
-                            photo.caption ||
-                            `${currentPlace.currentName} ${index + 1}`
-                          }
-                          style={{
-                            width:
-                              '100%',
-                            height:
-                              'auto',
-                            display:
-                              'block',
-                            borderRadius:
-                              '6px',
-                          }}
-                        />
-
-                        {(photo.caption ||
-                          photo.takenAt ||
-                          photo.direction ||
-                          photo.credit ||
-                          photo.sourceUrl) && (
-                          <figcaption
-                            style={{
-                              marginTop:
-                                '10px',
-                              color:
-                                '#66716d',
-                              fontSize:
-                                '0.85rem',
-                              lineHeight:
-                                1.7,
-                            }}
-                          >
-                            {photo.caption && (
-                              <div>
-                                {
-                                  photo.caption
-                                }
-                              </div>
-                            )}
-
-                            {photo.takenAt && (
-                              <div>
-                                撮影日：
-                                {
-                                  photo.takenAt
-                                }
-                              </div>
-                            )}
-
-                            {photo.direction && (
-                              <div>
-                                撮影方向：
-                                {
-                                  photo.direction
-                                }
-                              </div>
-                            )}
-
-                            {photo.credit && (
-                              <div>
-                                撮影・提供：
-                                {
-                                  photo.credit
-                                }
-                              </div>
-                            )}
-
-                            {photo.sourceUrl && (
-                              <div>
-                                <a
-                                  href={
-                                    photo.sourceUrl
-                                  }
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  写真出典
-                                </a>
-                              </div>
-                            )}
-                          </figcaption>
-                        )}
-                      </figure>
-                    )
-                  )}
-                </div>
+                <MediaGallery
+                  items={
+                    currentGalleryItems
+                  }
+                />
               </div>
             )}
 
@@ -1337,6 +1496,66 @@ export default async function MeishoPage({
           </div>
         )}
       </section>
+
+      {/* 画像で比較 */}
+      {historicalImages.length > 0 &&
+        currentGalleryItems.length > 0 && (
+          <section
+            id="visual-comparison"
+            style={{
+              marginTop: '64px',
+              paddingTop: '40px',
+              borderTop:
+                '1px solid #d8d2c7',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                marginBottom: '28px',
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: '1.5rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                画像で今昔を比較
+              </h2>
+
+              <div
+                style={{
+                  flex: 1,
+                  height: '1px',
+                  background: '#d8d2c7',
+                }}
+              />
+            </div>
+
+            <p
+              style={{
+                margin:
+                  '0 0 22px',
+                color: '#6d665d',
+                fontSize: '0.9rem',
+              }}
+            >
+              登録されている歴史画像と現地写真の先頭画像を並べています。
+              画像をクリックすると拡大できます。
+            </p>
+
+            <MediaGallery
+              items={
+                visualComparisonItems
+              }
+            />
+          </section>
+        )}
 
       {/* 名所図会との比較 */}
       <section
@@ -1536,6 +1755,18 @@ export default async function MeishoPage({
                   ← 前の名所
                 </div>
 
+                <div
+                  style={{
+                    marginBottom: '5px',
+                    color: '#8d857a',
+                    fontSize: '0.78rem',
+                  }}
+                >
+                  {previousEntry.workTitle}
+                  {' ／ '}
+                  {previousEntry.volumeLabel}
+                </div>
+
                 <strong
                   style={{
                     fontSize: '1.05rem',
@@ -1574,6 +1805,18 @@ export default async function MeishoPage({
                   }}
                 >
                   次の名所 →
+                </div>
+
+                <div
+                  style={{
+                    marginBottom: '5px',
+                    color: '#8d857a',
+                    fontSize: '0.78rem',
+                  }}
+                >
+                  {nextEntry.workTitle}
+                  {' ／ '}
+                  {nextEntry.volumeLabel}
                 </div>
 
                 <strong
