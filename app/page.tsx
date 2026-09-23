@@ -2,6 +2,9 @@ import Link from 'next/link'
 import { supabase } from '../src/lib/supabase'
 import { currentPlaces } from '../src/data/currentPlaces'
 
+const heroImageUrl =
+  'https://ik.imagekit.io/meisho/site/edo-meisho-zue.png?tr=w-2000,f-webp,q-85'
+
 export default async function Home() {
   const registeredEntryIds = Object.keys(currentPlaces)
     .map(Number)
@@ -153,122 +156,147 @@ export default async function Home() {
       style={{
         minHeight: '100vh',
         color: '#292722',
-        background:
-          'linear-gradient(to bottom, #f8f5ee 0%, #ffffff 520px)',
+        background: '#fff',
       }}
     >
+      {/* SEO用H1 */}
+      <h1
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+        }}
+      >
+        名所図会 今昔
+      </h1>
+
       {/* ==============================
           メインビジュアル
       ============================== */}
 
       <section
         style={{
+          width: '100%',
+          background: '#eee5d3',
+        }}
+      >
+        <Link
+          href="/meisho"
+          aria-label="名所一覧を見る"
+          style={{
+            display: 'block',
+            width: '100%',
+            textDecoration: 'none',
+          }}
+        >
+          <img
+            src={heroImageUrl}
+            alt="名所図会 今昔。名所図会の原文と現在の風景をたどる"
+            fetchPriority="high"
+            style={{
+              display: 'block',
+              width: '100%',
+              height: 'auto',
+              margin: 0,
+            }}
+          />
+        </Link>
+      </section>
+
+      {/* ==============================
+          サイト説明
+      ============================== */}
+
+      <section
+        style={{
           maxWidth: '1080px',
           margin: '0 auto',
-          padding: '92px 24px 80px',
+          padding: '64px 24px',
         }}
       >
         <div
           style={{
-            maxWidth: '800px',
+            maxWidth: '760px',
+            margin: '0 auto',
+            textAlign: 'center',
           }}
         >
           <div
             style={{
-              marginBottom: '24px',
-              color: '#827767',
-              fontSize: '0.85rem',
-              letterSpacing: '0.22em',
+              marginBottom: '18px',
+              color: '#897d6b',
+              fontSize: '0.82rem',
               fontWeight: 600,
+              letterSpacing: '0.2em',
             }}
           >
-            名所図会 × 現代の風景
+            MEISHO ZUE ARCHIVE
           </div>
 
-          <h1
+          <h2
             style={{
               margin: 0,
               fontFamily:
                 '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
-              fontSize:
-                'clamp(3rem, 8vw, 5.6rem)',
-              lineHeight: 1.15,
+              fontSize: 'clamp(1.8rem, 5vw, 2.6rem)',
               fontWeight: 500,
-              letterSpacing: '0.08em',
+              lineHeight: 1.5,
+              letterSpacing: '0.07em',
             }}
           >
-            名所図会
+            名所図会に描かれた場所を、
             <br />
-            今昔
-          </h1>
+            現代の風景からたどる
+          </h2>
 
           <div
             style={{
-              width: '90px',
-              height: '2px',
-              margin: '34px 0',
-              background: '#988b76',
+              width: '70px',
+              height: '1px',
+              margin: '26px auto',
+              background: '#a69a87',
             }}
           />
 
           <p
             style={{
-              maxWidth: '680px',
               margin: 0,
-              color: '#5e5951',
-              fontSize: '1.05rem',
+              color: '#625d55',
+              fontSize: '1rem',
               lineHeight: 2,
             }}
           >
             江戸時代の名所図会に記された土地を訪ね、
             原文・現代語訳・関連史料・現地写真を通して、
-            かつて描かれた風景と現在の姿をたどります。
+            かつての名所と現在の姿を比較します。
           </p>
 
           <div
             style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '14px',
-              marginTop: '38px',
+              marginTop: '32px',
             }}
           >
             <Link
               href="/meisho"
               style={{
                 display: 'inline-block',
-                padding: '14px 24px',
-                borderRadius: '6px',
-                background: '#3f4a45',
+                padding: '14px 30px',
+                borderRadius: '5px',
+                background: '#333b37',
                 color: '#fff',
                 textDecoration: 'none',
                 fontSize: '0.95rem',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
+                letterSpacing: '0.06em',
               }}
             >
-              名所一覧を見る
+              名所一覧を見る →
             </Link>
-
-            {sortedEntries[0] && (
-              <Link
-                href={`/meisho/${sortedEntries[0].id}`}
-                style={{
-                  display: 'inline-block',
-                  padding: '13px 24px',
-                  border:
-                    '1px solid #b9b0a2',
-                  borderRadius: '6px',
-                  background:
-                    'rgba(255,255,255,0.65)',
-                  color: '#403c36',
-                  textDecoration: 'none',
-                  fontSize: '0.95rem',
-                }}
-              >
-                公開記事を読む
-              </Link>
-            )}
           </div>
         </div>
       </section>
@@ -280,10 +308,8 @@ export default async function Home() {
       <section
         style={{
           borderTop: '1px solid #ded8ce',
-          borderBottom:
-            '1px solid #ded8ce',
-          background:
-            'rgba(255,255,255,0.72)',
+          borderBottom: '1px solid #ded8ce',
+          background: '#f8f6f1',
         }}
       >
         <div
@@ -292,16 +318,22 @@ export default async function Home() {
             margin: '0 auto',
             padding: '28px 24px',
             display: 'flex',
+            justifyContent: 'center',
             flexWrap: 'wrap',
-            gap: '36px',
+            gap: '80px',
           }}
         >
-          <div>
+          <div
+            style={{
+              textAlign: 'center',
+            }}
+          >
             <div
               style={{
                 color: '#888177',
                 fontSize: '0.8rem',
                 marginBottom: '3px',
+                letterSpacing: '0.08em',
               }}
             >
               公開名所
@@ -309,14 +341,14 @@ export default async function Home() {
 
             <div
               style={{
-                fontSize: '1.7rem',
+                fontSize: '1.8rem',
                 fontWeight: 600,
               }}
             >
               {sortedEntries.length}
               <span
                 style={{
-                  marginLeft: '4px',
+                  marginLeft: '5px',
                   fontSize: '0.9rem',
                   fontWeight: 400,
                 }}
@@ -326,12 +358,17 @@ export default async function Home() {
             </div>
           </div>
 
-          <div>
+          <div
+            style={{
+              textAlign: 'center',
+            }}
+          >
             <div
               style={{
                 color: '#888177',
                 fontSize: '0.8rem',
                 marginBottom: '3px',
+                letterSpacing: '0.08em',
               }}
             >
               公開作品
@@ -339,14 +376,14 @@ export default async function Home() {
 
             <div
               style={{
-                fontSize: '1.7rem',
+                fontSize: '1.8rem',
                 fontWeight: 600,
               }}
             >
               {sortedWorks.length}
               <span
                 style={{
-                  marginLeft: '4px',
+                  marginLeft: '5px',
                   fontSize: '0.9rem',
                   fontWeight: 400,
                 }}
@@ -435,8 +472,7 @@ export default async function Home() {
               key={item.number}
               style={{
                 padding: '26px',
-                border:
-                  '1px solid #ddd7cd',
+                border: '1px solid #ddd7cd',
                 borderRadius: '8px',
                 background: '#fffdf9',
               }}
@@ -519,8 +555,7 @@ export default async function Home() {
           <div
             style={{
               padding: '24px',
-              border:
-                '1px solid #d8bcbc',
+              border: '1px solid #d8bcbc',
               borderRadius: '8px',
               background: '#fff7f7',
               color: '#765555',
@@ -543,8 +578,7 @@ export default async function Home() {
           <div
             style={{
               padding: '32px',
-              border:
-                '1px solid #ddd7cd',
+              border: '1px solid #ddd7cd',
               borderRadius: '8px',
               background: '#fffdf9',
               color: '#777',
@@ -570,8 +604,7 @@ export default async function Home() {
                 <article
                   key={work.id}
                   style={{
-                    border:
-                      '1px solid #d6d0c5',
+                    border: '1px solid #d6d0c5',
                     borderRadius: '10px',
                     overflow: 'hidden',
                     background: '#fff',
@@ -668,58 +701,45 @@ export default async function Home() {
                     {workEntries.map(
                       (entry) => {
                         const volume =
-                          entry.volume_id !==
-                          null
+                          entry.volume_id !== null
                             ? volumeMap.get(
                                 entry.volume_id
                               )
                             : undefined
 
                         const currentPlace =
-                          currentPlaces[
-                            entry.id
-                          ]
+                          currentPlaces[entry.id]
 
                         return (
                           <Link
                             key={entry.id}
                             href={`/meisho/${entry.id}`}
                             style={{
-                              display:
-                                'block',
-                              padding:
-                                '24px 26px',
+                              display: 'block',
+                              padding: '24px 26px',
                               borderRight:
                                 '1px solid #eee9e1',
                               borderBottom:
                                 '1px solid #eee9e1',
-                              color:
-                                '#292722',
-                              textDecoration:
-                                'none',
+                              color: '#292722',
+                              textDecoration: 'none',
                             }}
                           >
                             {volume?.volume_label && (
                               <div
                                 style={{
-                                  marginBottom:
-                                    '8px',
-                                  color:
-                                    '#938a7e',
-                                  fontSize:
-                                    '0.78rem',
+                                  marginBottom: '8px',
+                                  color: '#938a7e',
+                                  fontSize: '0.78rem',
                                 }}
                               >
-                                {
-                                  volume.volume_label
-                                }
+                                {volume.volume_label}
                               </div>
                             )}
 
                             <div
                               style={{
-                                fontSize:
-                                  '1.08rem',
+                                fontSize: '1.08rem',
                                 fontWeight: 600,
                                 lineHeight: 1.55,
                               }}
@@ -730,12 +750,9 @@ export default async function Home() {
                             {entry.reading && (
                               <div
                                 style={{
-                                  marginTop:
-                                    '5px',
-                                  color:
-                                    '#999188',
-                                  fontSize:
-                                    '0.78rem',
+                                  marginTop: '5px',
+                                  color: '#999188',
+                                  fontSize: '0.78rem',
                                 }}
                               >
                                 {entry.reading}
@@ -747,12 +764,9 @@ export default async function Home() {
                                 entry.heading && (
                                 <div
                                   style={{
-                                    marginTop:
-                                      '14px',
-                                    color:
-                                      '#65716d',
-                                    fontSize:
-                                      '0.82rem',
+                                    marginTop: '14px',
+                                    color: '#65716d',
+                                    fontSize: '0.82rem',
                                   }}
                                 >
                                   現在：
@@ -783,8 +797,7 @@ export default async function Home() {
             style={{
               display: 'inline-block',
               padding: '13px 26px',
-              border:
-                '1px solid #9c9386',
+              border: '1px solid #9c9386',
               borderRadius: '6px',
               color: '#48433d',
               textDecoration: 'none',
