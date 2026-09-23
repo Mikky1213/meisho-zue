@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { supabase } from '../../../../../src/lib/supabase'
 import { currentPlaces } from '../../../../../src/data/currentPlaces'
+import JsonLd from '../../../../../src/components/JsonLd'
+import { absoluteUrl } from '../../../../../src/lib/site'
 
 type Props = {
   params: Promise<{
@@ -153,6 +155,10 @@ export default async function VolumePage({
   if (entriesError || !entries) {
     return (
       <main className="archive-page">
+      <JsonLd
+        data={volumeJsonLd}
+      />
+
         <h1>名所取得エラー</h1>
         <pre>{entriesError?.message}</pre>
       </main>
@@ -166,6 +172,74 @@ export default async function VolumePage({
   const volumeTitle =
     volume.volume_label ??
     `巻 ${volume.volume_no ?? volume.id}`
+
+  const volumeJsonLd = [
+    {
+      '@context':
+        'https://schema.org',
+      '@type':
+        'CollectionPage',
+      name:
+        `${work.title} ${volumeTitle}`,
+      url:
+        absoluteUrl(
+          `/works/${work.id}/volumes/${volume.id}`
+        ),
+      inLanguage: 'ja',
+      isPartOf: {
+        '@type':
+          'CreativeWork',
+        name:
+          work.title,
+      },
+    },
+    {
+      '@context':
+        'https://schema.org',
+      '@type':
+        'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type':
+            'ListItem',
+          position: 1,
+          name: 'ホーム',
+          item:
+            absoluteUrl('/'),
+        },
+        {
+          '@type':
+            'ListItem',
+          position: 2,
+          name: '作品一覧',
+          item:
+            absoluteUrl('/works'),
+        },
+        {
+          '@type':
+            'ListItem',
+          position: 3,
+          name:
+            work.title,
+          item:
+            absoluteUrl(
+              `/works/${work.id}`
+            ),
+        },
+        {
+          '@type':
+            'ListItem',
+          position: 4,
+          name:
+            volumeTitle,
+          item:
+            absoluteUrl(
+              `/works/${work.id}/volumes/${volume.id}`
+            ),
+        },
+      ],
+    },
+  ]
 
   return (
     <main className="archive-page">

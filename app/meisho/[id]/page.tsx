@@ -6,6 +6,8 @@ import { currentPlaces } from '../../../src/data/currentPlaces'
 import { historicalMedia } from '../../../src/data/historicalMedia'
 import MediaGallery from '../../../src/components/MediaGallery'
 import { getRegionForEntry } from '../../../src/data/regions'
+import JsonLd from '../../../src/components/JsonLd'
+import { absoluteUrl } from '../../../src/lib/site'
 
 type Props = {
   params: Promise<{
@@ -311,6 +313,113 @@ export default async function MeishoPage({
     )
   }
 
+  const articleDescription =
+    currentPlace?.description
+      ? `${work.title}「${entry.heading}」。${currentPlace.description}`
+      : `${work.title}に記された「${entry.heading}」の原文と現在の姿を紹介します。`
+
+  const articleImages = [
+    ...(currentPlace?.photos ?? []).map(
+      (photo) => photo.url
+    ),
+    ...historicalImages.map(
+      (image) => image.url
+    ),
+  ]
+
+  const breadcrumbItems = [
+    {
+      name: 'ホーム',
+      url: absoluteUrl('/'),
+    },
+    {
+      name: '作品一覧',
+      url: absoluteUrl('/works'),
+    },
+    {
+      name: work.title,
+      url: absoluteUrl(
+        `/works/${work.id}`
+      ),
+    },
+    {
+      name:
+        volume.volume_label ??
+        `巻 ${volume.volume_no ?? volume.id}`,
+      url: absoluteUrl(
+        `/works/${work.id}/volumes/${volume.id}`
+      ),
+    },
+    {
+      name: entry.heading,
+      url: absoluteUrl(
+        `/meisho/${entry.id}`
+      ),
+    },
+  ]
+
+  const pageJsonLd = [
+    {
+      '@context':
+        'https://schema.org',
+      '@type': 'Article',
+      headline: entry.heading,
+      description:
+        articleDescription,
+      url: absoluteUrl(
+        `/meisho/${entry.id}`
+      ),
+      mainEntityOfPage:
+        absoluteUrl(
+          `/meisho/${entry.id}`
+        ),
+      inLanguage: 'ja',
+      isPartOf: {
+        '@type':
+          'CreativeWork',
+        name: work.title,
+      },
+      about:
+        currentPlace
+          ? {
+              '@type': 'Place',
+              name:
+                currentPlace.currentName ||
+                entry.heading,
+              address:
+                currentPlace.address ||
+                undefined,
+            }
+          : {
+              '@type': 'Place',
+              name: entry.heading,
+            },
+      image:
+        articleImages.length > 0
+          ? articleImages
+          : undefined,
+    },
+    {
+      '@context':
+        'https://schema.org',
+      '@type':
+        'BreadcrumbList',
+      itemListElement:
+        breadcrumbItems.map(
+          (item, index) => ({
+            '@type':
+              'ListItem',
+            position:
+              index + 1,
+            name:
+              item.name,
+            item:
+              item.url,
+          })
+        ),
+    },
+  ]
+
   // ------------------------------
   // 原文
   // ------------------------------
@@ -613,6 +722,10 @@ export default async function MeishoPage({
         color: '#292722',
       }}
     >
+      <JsonLd
+        data={pageJsonLd}
+      />
+
       {/* パンくず */}
       <nav
         aria-label="パンくず"

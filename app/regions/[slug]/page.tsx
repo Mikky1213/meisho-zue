@@ -8,6 +8,8 @@ import {
   getRegionBySlug,
   regions,
 } from '../../../src/data/regions'
+import JsonLd from '../../../src/components/JsonLd'
+import { absoluteUrl } from '../../../src/lib/site'
 
 type Props = {
   params: Promise<{
@@ -83,6 +85,10 @@ export default async function RegionPage({
   if (publishedIds.length === 0) {
     return (
       <main className="archive-page">
+      <JsonLd
+        data={regionJsonLd}
+      />
+
         <nav
           aria-label="パンくず"
           className="archive-breadcrumb"
@@ -357,6 +363,58 @@ export default async function RegionPage({
             100
         )
       : 0
+
+  const regionJsonLd = [
+    {
+      '@context':
+        'https://schema.org',
+      '@type':
+        'CollectionPage',
+      name:
+        `${region.title}の名所`,
+      description:
+        region.description,
+      url: absoluteUrl(
+        `/regions/${region.slug}`
+      ),
+      inLanguage: 'ja',
+    },
+    {
+      '@context':
+        'https://schema.org',
+      '@type':
+        'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type':
+            'ListItem',
+          position: 1,
+          name: 'ホーム',
+          item:
+            absoluteUrl('/'),
+        },
+        {
+          '@type':
+            'ListItem',
+          position: 2,
+          name: '地域一覧',
+          item:
+            absoluteUrl('/regions'),
+        },
+        {
+          '@type':
+            'ListItem',
+          position: 3,
+          name:
+            region.title,
+          item:
+            absoluteUrl(
+              `/regions/${region.slug}`
+            ),
+        },
+      ],
+    },
+  ]
 
   return (
     <main className="archive-page">

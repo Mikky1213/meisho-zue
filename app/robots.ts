@@ -1,4 +1,8 @@
 import type { MetadataRoute } from 'next'
+import {
+  SITE_URL,
+  absoluteUrl,
+} from '../src/lib/site'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +11,9 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
     },
     sitemap:
-      'https://meisho-zue.vercel.app/sitemap.xml',
+      absoluteUrl(
+        '/sitemap.xml'
+      ),
+    host: SITE_URL,
   }
 }

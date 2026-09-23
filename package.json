@@ -15,7 +15,10 @@
     "add-comparison": "node scripts/add-comparison.mjs",
     "add-historical-image": "node scripts/add-historical-image.mjs",
     "validate-content": "node scripts/validate-content.mjs",
-    "preflight": "node scripts/validate-content.mjs && next build"
+    "preflight": "node scripts/validate-content.mjs && node scripts/audit-site.mjs && next build",
+    "audit-site": "node scripts/audit-site.mjs",
+    "audit-urls": "node scripts/audit-urls.mjs",
+    "audit-production": "node scripts/audit-production.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

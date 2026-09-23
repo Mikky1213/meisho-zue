@@ -2,8 +2,9 @@ import type { MetadataRoute } from 'next'
 import { supabase } from '../src/lib/supabase'
 import { currentPlaces } from '../src/data/currentPlaces'
 import { regions } from '../src/data/regions'
+import { SITE_URL } from '../src/lib/site'
 
-const baseUrl = 'https://meisho-zue.vercel.app'
+const baseUrl = SITE_URL
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entryIds = Object.keys(currentPlaces)

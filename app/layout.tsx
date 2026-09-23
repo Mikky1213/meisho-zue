@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import JsonLd from "../src/components/JsonLd";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+  absoluteUrl,
+} from "../src/lib/site";
 import "./globals.css";
 import "./site.css";
 
@@ -14,18 +21,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const googleVerification =
+  process.env.GOOGLE_SITE_VERIFICATION?.trim();
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://meisho-zue.vercel.app"),
+  metadataBase: new URL(SITE_URL),
 
   title: {
-    default: "名所図会 今昔",
-    template: "%s | 名所図会 今昔",
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
 
-  description:
-    "江戸時代の名所図会に記された土地を、原文・現代の姿・関連史料・現地写真からたどるアーカイブです。",
+  description: SITE_DESCRIPTION,
 
-  applicationName: "名所図会 今昔",
+  applicationName: SITE_NAME,
 
   alternates: {
     canonical: "/",
@@ -35,28 +44,55 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ja_JP",
     url: "/",
-    siteName: "名所図会 今昔",
-    title: "名所図会 今昔",
-    description:
-      "江戸時代の名所図会に記された土地を、原文・現代の姿・関連史料・現地写真からたどるアーカイブです。",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "名所図会 今昔",
-    description:
-      "江戸時代の名所図会に記された土地を、原文・現代の姿・関連史料・現地写真からたどるアーカイブです。",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
   },
 
   robots: {
     index: true,
     follow: true,
   },
+
+  verification: googleVerification
+    ? {
+        google:
+          googleVerification,
+      }
+    : undefined,
 };
 
 export default function RootLayout({
   children,
 }: LayoutProps<"/">) {
+  const websiteJsonLd = {
+    "@context":
+      "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description:
+      SITE_DESCRIPTION,
+    inLanguage: "ja",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type":
+          "EntryPoint",
+        urlTemplate:
+          `${absoluteUrl("/meisho")}?q={search_term_string}`,
+      },
+      "query-input":
+        "required name=search_term_string",
+    },
+  };
+
   return (
     <html
       lang="ja"
@@ -70,6 +106,17 @@ export default function RootLayout({
           color: "#292722",
         }}
       >
+        <JsonLd
+          data={websiteJsonLd}
+        />
+
+        <a
+          href="#main-content"
+          className="skip-link"
+        >
+          本文へ移動
+        </a>
+
         <header className="site-header">
           <div className="site-header-inner">
             <Link
@@ -112,7 +159,11 @@ export default function RootLayout({
           </div>
         </header>
 
-        <div className="site-content">
+        <div
+          id="main-content"
+          className="site-content"
+          tabIndex={-1}
+        >
           {children}
         </div>
 
