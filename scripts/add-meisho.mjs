@@ -1,217 +1,104 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { createClient } from '@supabase/supabase-js'
+import {
+  createClient,
+} from '@supabase/supabase-js'
+import {
+  currentPlacesPath,
+  fail,
+  loadEnvLocal,
+  parseCliArgs,
+  printSuccess,
+  projectRoot,
+  requireInteger,
+  tsString,
+  writeUtf8,
+} from './lib/content-utils.mjs'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+async function main() {
+  loadEnvLocal()
 
-const projectRoot = path.resolve(__dirname, '..')
+  const {
+    positional,
+  } = parseCliArgs()
 
-// --------------------------------------------------
-// .env.local 読み込み
-// --------------------------------------------------
+  const entryId =
+    requireInteger(
+      positional[0],
+      'entry ID'
+    )
 
-function loadEnvLocal() {
-  const envPath = path.join(
-    projectRoot,
-    '.env.local'
-  )
+  const supabaseUrl =
+    process.env
+      .NEXT_PUBLIC_SUPABASE_URL
 
-  if (!fs.existsSync(envPath)) {
+  const supabaseKey =
+    process.env
+      .NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+  if (
+    !supabaseUrl ||
+    !supabaseKey
+  ) {
     throw new Error(
-      `.env.local が見つかりません: ${envPath}`
+      '.env.local の NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY を確認してください'
     )
   }
 
-  const text = fs.readFileSync(
-    envPath,
-    'utf8'
-  )
+  const supabase =
+    createClient(
+      supabaseUrl,
+      supabaseKey
+    )
 
-  for (const rawLine of text.split(/\r?\n/)) {
-    const line = rawLine.trim()
+  const {
+    data: entry,
+    error,
+  } = await supabase
+    .from('entries')
+    .select(`
+      id,
+      heading,
+      reading,
+      work_id,
+      volume_id,
+      entry_order
+    `)
+    .eq('id', entryId)
+    .single()
 
-    if (
-      !line ||
-      line.startsWith('#')
-    ) {
-      continue
-    }
-
-    const separatorIndex =
-      line.indexOf('=')
-
-    if (separatorIndex === -1) {
-      continue
-    }
-
-    const key = line
-      .slice(0, separatorIndex)
-      .trim()
-
-    let value = line
-      .slice(separatorIndex + 1)
-      .trim()
-
-    if (
-      (value.startsWith('"') &&
-        value.endsWith('"')) ||
-      (value.startsWith("'") &&
-        value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1)
-    }
-
-    if (!(key in process.env)) {
-      process.env[key] = value
-    }
-  }
-}
-
-loadEnvLocal()
-
-// --------------------------------------------------
-// Entry ID
-// --------------------------------------------------
-
-const rawEntryId = process.argv[2]
-
-if (!rawEntryId) {
-  console.error(
-    'Entry ID を指定してください。'
-  )
-
-  console.error(
-    '例: npm.cmd run add-meisho -- 4498'
-  )
-
-  process.exit(1)
-}
-
-const entryId = Number(rawEntryId)
-
-if (
-  !Number.isInteger(entryId) ||
-  entryId <= 0
-) {
-  console.error(
-    `不正な Entry ID です: ${rawEntryId}`
-  )
-
-  process.exit(1)
-}
-
-// --------------------------------------------------
-// Supabase
-// --------------------------------------------------
-
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL
-
-const supabaseKey =
-  process.env
-    .NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-
-if (!supabaseUrl) {
-  throw new Error(
-    'NEXT_PUBLIC_SUPABASE_URL が設定されていません。'
-  )
-}
-
-if (!supabaseKey) {
-  throw new Error(
-    'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY が設定されていません。'
-  )
-}
-
-const supabase = createClient(
-  supabaseUrl,
-  supabaseKey,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  }
-)
-
-// --------------------------------------------------
-// Entry取得
-// --------------------------------------------------
-
-const {
-  data: entry,
-  error: entryError,
-} = await supabase
-  .from('entries')
-  .select(`
-    id,
-    heading,
-    reading,
-    work_id,
-    volume_id,
-    entry_order
-  `)
-  .eq('id', entryId)
-  .single()
-
-if (entryError || !entry) {
-  console.error(
-    `Entry ID ${entryId} が見つかりません。`
-  )
-
-  if (entryError) {
-    console.error(entryError.message)
+  if (error || !entry) {
+    throw new Error(
+      `entries.id=${entryId} を取得できません: ${error?.message ?? 'not found'}`
+    )
   }
 
-  process.exit(1)
-}
+  const meishoDir =
+    path.join(
+      projectRoot,
+      'src',
+      'data',
+      'meisho'
+    )
 
-// --------------------------------------------------
-// ファイル情報
-// --------------------------------------------------
-
-const variableName =
-  `meisho${entryId}`
-
-const meishoDirectory =
-  path.join(
-    projectRoot,
-    'src',
-    'data',
-    'meisho'
+  fs.mkdirSync(
+    meishoDir,
+    {
+      recursive: true,
+    }
   )
 
-const articlePath =
-  path.join(
-    meishoDirectory,
-    `${entryId}.ts`
-  )
+  const filePath =
+    path.join(
+      meishoDir,
+      `${entryId}.ts`
+    )
 
-const registryPath =
-  path.join(
-    projectRoot,
-    'src',
-    'data',
-    'currentPlaces.ts'
-  )
+  if (!fs.existsSync(filePath)) {
+    const source = `import type { CurrentPlace } from '../currentPlaces'
 
-fs.mkdirSync(
-  meishoDirectory,
-  {
-    recursive: true,
-  }
-)
-
-// --------------------------------------------------
-// 記事ファイル生成
-// --------------------------------------------------
-
-const articleContent = `import type { CurrentPlace } from '../currentPlaces'
-
-export const ${variableName}: CurrentPlace = {
-  currentName: ${JSON.stringify(entry.heading)},
+export const meisho${entryId}: CurrentPlace = {
+  currentName: ${tsString(entry.heading)},
 
   address: '',
 
@@ -227,165 +114,142 @@ export const ${variableName}: CurrentPlace = {
 }
 `
 
-if (
-  fs.existsSync(articlePath)
-) {
-  console.log(
-    `既存ファイルは変更しません: src/data/meisho/${entryId}.ts`
-  )
-} else {
-  fs.writeFileSync(
-    articlePath,
-    articleContent,
-    'utf8'
-  )
-
-  console.log(
-    `作成: src/data/meisho/${entryId}.ts`
-  )
-}
-
-// --------------------------------------------------
-// currentPlaces.ts 更新
-// --------------------------------------------------
-
-if (!fs.existsSync(registryPath)) {
-  throw new Error(
-    `currentPlaces.ts が見つかりません: ${registryPath}`
-  )
-}
-
-let registryContent =
-  fs.readFileSync(
-    registryPath,
-    'utf8'
-  )
-
-const importLine =
-  `import { ${variableName} } from './meisho/${entryId}'`
-
-// import追加
-if (
-  !registryContent.includes(
-    importLine
-  )
-) {
-  const importMatch =
-    registryContent.match(
-      /(?:^import .+\r?\n)+/
+    writeUtf8(
+      filePath,
+      source
     )
 
-  if (!importMatch) {
-    throw new Error(
-      'currentPlaces.ts の import 部分を特定できません。'
+    printSuccess(
+      `記事ファイル作成: src/data/meisho/${entryId}.ts`
+    )
+  } else {
+    console.log(
+      `- 既存記事は上書きしません: src/data/meisho/${entryId}.ts`
     )
   }
 
-  const insertPosition =
-    importMatch[0].length
+  const registryPath =
+    currentPlacesPath()
 
-  registryContent =
-    registryContent.slice(
-      0,
-      insertPosition
-    ) +
-    `${importLine}\n` +
-    registryContent.slice(
-      insertPosition
+  let registry =
+    fs.readFileSync(
+      registryPath,
+      'utf8'
     )
 
-  console.log(
-    `登録: import ${variableName}`
-  )
-} else {
-  console.log(
-    `import 登録済み: ${variableName}`
-  )
-}
+  const importLine =
+    `import { meisho${entryId} } from './meisho/${entryId}'`
 
-// Map登録
-const mapEntry =
-  `${entryId}: ${variableName},`
+  if (
+    !registry.includes(
+      importLine
+    )
+  ) {
+    const importMatches = [
+      ...registry.matchAll(
+        /^import .*$/gm
+      ),
+    ]
 
-if (
-  !registryContent.includes(
-    mapEntry
-  )
-) {
+    if (
+      importMatches.length === 0
+    ) {
+      throw new Error(
+        'currentPlaces.ts の import 部分を解析できません'
+      )
+    }
+
+    const lastImport =
+      importMatches[
+        importMatches.length - 1
+      ]
+
+    const insertAt =
+      lastImport.index +
+      lastImport[0].length
+
+    registry =
+      registry.slice(0, insertAt) +
+      `\n${importLine}` +
+      registry.slice(insertAt)
+  }
+
   const mapMarker =
-    'export const currentPlaces: Record<number, CurrentPlace> = {'
+    'export const currentPlaces'
 
   const mapStart =
-    registryContent.indexOf(
+    registry.indexOf(
       mapMarker
     )
 
   if (mapStart === -1) {
     throw new Error(
-      'currentPlaces の定義を特定できません。'
+      'currentPlaces の定義が見つかりません'
     )
   }
 
-  const mapEnd =
-    registryContent.indexOf(
+  const openBrace =
+    registry.indexOf(
+      '{',
+      registry.indexOf(
+        '=',
+        mapStart
+      )
+    )
+
+  const closeBrace =
+    registry.indexOf(
       '\n}',
-      mapStart
+      openBrace
     )
 
-  if (mapEnd === -1) {
+  if (
+    openBrace === -1 ||
+    closeBrace === -1
+  ) {
     throw new Error(
-      'currentPlaces の終了位置を特定できません。'
+      'currentPlaces のマップ終端を解析できません'
     )
   }
 
-  registryContent =
-    registryContent.slice(
-      0,
-      mapEnd
-    ) +
-    `\n  ${mapEntry}` +
-    registryContent.slice(
-      mapEnd
+  const mapBody =
+    registry.slice(
+      openBrace + 1,
+      closeBrace
     )
 
-  console.log(
-    `登録: ${mapEntry}`
+  const entryPattern =
+    new RegExp(
+      `(^|\\n)\\s*${entryId}\\s*:`
+    )
+
+  if (!entryPattern.test(mapBody)) {
+    registry =
+      registry.slice(
+        0,
+        closeBrace
+      ) +
+      `\n  ${entryId}: meisho${entryId},` +
+      registry.slice(
+        closeBrace
+      )
+  }
+
+  writeUtf8(
+    registryPath,
+    registry
   )
-} else {
+
+  printSuccess(
+    `currentPlaces に ${entryId} を登録`
+  )
+
   console.log(
-    `currentPlaces 登録済み: ${entryId}`
+    `  名所: ${entry.heading}`
+  )
+  console.log(
+    `  読み: ${entry.reading ?? '-'}`
   )
 }
 
-// 書き込み
-fs.writeFileSync(
-  registryPath,
-  registryContent,
-  'utf8'
-)
-
-// --------------------------------------------------
-// 完了
-// --------------------------------------------------
-
-console.log('')
-console.log('------------------------------')
-console.log('名所記事の準備が完了しました。')
-console.log('------------------------------')
-console.log(`Entry ID : ${entry.id}`)
-console.log(`名所名   : ${entry.heading}`)
-
-if (entry.reading) {
-  console.log(
-    `読み     : ${entry.reading}`
-  )
-}
-
-console.log(
-  `記事     : http://localhost:3000/meisho/${entry.id}`
-)
-
-console.log('')
-console.log(
-  `編集先   : src/data/meisho/${entry.id}.ts`
-)
+main().catch(fail)

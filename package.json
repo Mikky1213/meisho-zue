@@ -9,7 +9,13 @@
     "lint": "eslint",
     "add-meisho": "node scripts/add-meisho.mjs",
     "add-photo": "node scripts/add-photo.mjs",
-    "add-content": "node scripts/add-content.mjs"
+    "add-content": "node scripts/add-content.mjs",
+    "add-translation": "node scripts/add-translation.mjs",
+    "add-document": "node scripts/add-document.mjs",
+    "add-comparison": "node scripts/add-comparison.mjs",
+    "add-historical-image": "node scripts/add-historical-image.mjs",
+    "validate-content": "node scripts/validate-content.mjs",
+    "preflight": "node scripts/validate-content.mjs && next build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

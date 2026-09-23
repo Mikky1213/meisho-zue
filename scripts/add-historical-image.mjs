@@ -1,15 +1,16 @@
 import {
-  appendArrayObject,
-  articlePath,
+  appendRecordArrayItem,
   buildObject,
   ensureFile,
   ensureUrl,
   fail,
   hasExactUrl,
+  historicalMediaPath,
   parseCliArgs,
   printSuccess,
   readUtf8,
   requireInteger,
+  requireText,
   writeUtf8,
 } from './lib/content-utils.mjs'
 
@@ -28,15 +29,21 @@ function main() {
   const url =
     ensureUrl(
       positional[1],
-      '写真URL'
+      '歴史画像URL'
+    )
+
+  const caption =
+    requireText(
+      flags.caption,
+      '--caption'
     )
 
   const filePath =
-    articlePath(entryId)
+    historicalMediaPath()
 
   ensureFile(
     filePath,
-    '記事ファイル'
+    'historicalMedia.ts'
   )
 
   let text =
@@ -44,46 +51,45 @@ function main() {
 
   if (hasExactUrl(text, url)) {
     throw new Error(
-      '同じ写真URLがすでに登録されています'
+      '同じ歴史画像URLがすでに登録されています'
     )
   }
 
   const objectText =
     buildObject([
       ['url', url],
-      ['caption',
-        typeof flags.caption === 'string'
-          ? flags.caption
-          : undefined],
+      ['caption', caption],
       ['alt',
         typeof flags.alt === 'string'
           ? flags.alt
           : undefined],
-      ['takenAt',
-        typeof flags['taken-at'] === 'string'
-          ? flags['taken-at']
-          : undefined],
-      ['direction',
-        typeof flags.direction === 'string'
-          ? flags.direction
-          : undefined],
-      ['credit',
-        typeof flags.credit === 'string'
-          ? flags.credit
+      ['source',
+        typeof flags.source === 'string'
+          ? flags.source
           : undefined],
       ['sourceUrl',
         typeof flags['source-url'] === 'string'
           ? ensureUrl(
               flags['source-url'],
-              'source URL'
+              '--source-url'
             )
+          : undefined],
+      ['page',
+        typeof flags.page === 'string'
+          ? flags.page
+          : undefined],
+      ['note',
+        typeof flags.note === 'string'
+          ? flags.note
           : undefined],
     ])
 
   text =
-    appendArrayObject({
+    appendRecordArrayItem({
       text,
-      property: 'photos',
+      exportName:
+        'historicalMedia',
+      numericKey: entryId,
       objectText,
     })
 
@@ -93,7 +99,7 @@ function main() {
   )
 
   printSuccess(
-    `写真を追加: ${entryId}`
+    `歴史画像を追加: ${entryId}`
   )
 }
 
