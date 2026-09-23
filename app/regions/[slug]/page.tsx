@@ -85,10 +85,6 @@ export default async function RegionPage({
   if (publishedIds.length === 0) {
     return (
       <main className="archive-page">
-      <JsonLd
-        data={regionJsonLd}
-      />
-
         <nav
           aria-label="パンくず"
           className="archive-breadcrumb"
@@ -418,6 +414,10 @@ export default async function RegionPage({
 
   return (
     <main className="archive-page">
+      <JsonLd
+        data={regionJsonLd}
+      />
+
       <nav
         aria-label="パンくず"
         className="archive-breadcrumb"

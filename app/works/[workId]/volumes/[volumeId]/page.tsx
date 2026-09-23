@@ -155,10 +155,6 @@ export default async function VolumePage({
   if (entriesError || !entries) {
     return (
       <main className="archive-page">
-      <JsonLd
-        data={volumeJsonLd}
-      />
-
         <h1>名所取得エラー</h1>
         <pre>{entriesError?.message}</pre>
       </main>
@@ -243,6 +239,10 @@ export default async function VolumePage({
 
   return (
     <main className="archive-page">
+      <JsonLd
+        data={volumeJsonLd}
+      />
+
       <nav
         aria-label="パンくず"
         className="archive-breadcrumb"

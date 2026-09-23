@@ -245,24 +245,16 @@ function main() {
       )
     }
 
-    for (
-      const property of [
-        'translation',
-        'documents',
-        'photos',
-        'comparison',
-      ]
-    ) {
-      const regex =
-        new RegExp(
-          `\\b${property}\\s*:\\s*\\[`
-        )
+    // photos は CurrentPlace の必須項目。
+    // translation / documents / comparison は optional のため、
+    // プロパティ自体が無くてもエラーにしない。
+    const photosRegex =
+      /\bphotos\s*:\s*\[/
 
-      if (!regex.test(text)) {
-        error(
-          `${name}: ${property}: [] がありません`
-        )
-      }
+    if (!photosRegex.test(text)) {
+      error(
+        `${name}: photos: [] がありません`
+      )
     }
 
     for (

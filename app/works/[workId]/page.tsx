@@ -105,10 +105,6 @@ export default async function WorkPage({
   if (entriesError || !entries) {
     return (
       <main className="archive-page">
-      <JsonLd
-        data={workJsonLd}
-      />
-
         <h1>名所取得エラー</h1>
         <pre>{entriesError?.message}</pre>
       </main>
@@ -290,6 +286,10 @@ export default async function WorkPage({
 
   return (
     <main className="archive-page">
+      <JsonLd
+        data={workJsonLd}
+      />
+
       <nav
         aria-label="パンくず"
         className="archive-breadcrumb"
