@@ -27,7 +27,36 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function MeishoListPage() {
+type Props = {
+  searchParams: Promise<{
+    q?: string
+    work?: string
+    volume?: string
+  }>
+}
+
+export default async function MeishoListPage({
+  searchParams,
+}: Props) {
+  const params = await searchParams
+
+  const query =
+    typeof params.q === 'string'
+      ? params.q.trim()
+      : ''
+
+  const selectedWorkId =
+    typeof params.work === 'string' &&
+    params.work !== ''
+      ? Number(params.work)
+      : null
+
+  const selectedVolumeId =
+    typeof params.volume === 'string' &&
+    params.volume !== ''
+      ? Number(params.volume)
+      : null
+
   const entryIds = Object.keys(currentPlaces)
     .map(Number)
     .filter(Number.isInteger)
@@ -294,15 +323,74 @@ export default async function MeishoListPage() {
   )
 
   // ------------------------------
-  // 作品 → 巻 → 名所 にグループ化
+  // 検索・絞り込み
   // ------------------------------
+
+  const normalizedQuery =
+    query.toLocaleLowerCase('ja-JP')
+
+  const filteredEntries =
+    sortedEntries.filter((entry) => {
+      if (
+        selectedWorkId !== null &&
+        Number.isInteger(selectedWorkId) &&
+        entry.work_id !== selectedWorkId
+      ) {
+        return false
+      }
+
+      if (
+        selectedVolumeId !== null &&
+        Number.isInteger(selectedVolumeId) &&
+        entry.volume_id !== selectedVolumeId
+      ) {
+        return false
+      }
+
+      if (!normalizedQuery) {
+        return true
+      }
+
+      const currentPlace =
+        currentPlaces[entry.id]
+
+      const searchableText = [
+        entry.heading,
+        entry.reading ?? '',
+        currentPlace?.currentName ?? '',
+        currentPlace?.address ?? '',
+        currentPlace?.description ?? '',
+      ]
+        .join(' ')
+        .toLocaleLowerCase('ja-JP')
+
+      return searchableText.includes(
+        normalizedQuery
+      )
+    })
+
+  const publicVolumes =
+    [...volumeMap.values()].sort(
+      (a, b) => {
+        if (a.work_id !== b.work_id) {
+          return a.work_id - b.work_id
+        }
+
+        return (
+          (a.volume_no ??
+            Number.MAX_SAFE_INTEGER) -
+          (b.volume_no ??
+            Number.MAX_SAFE_INTEGER)
+        )
+      }
+    )
 
   const grouped = new Map<
     number,
-    Map<number | null, typeof sortedEntries>
+    Map<number | null, typeof filteredEntries>
   >()
 
-  for (const entry of sortedEntries) {
+  for (const entry of filteredEntries) {
     if (!grouped.has(entry.work_id)) {
       grouped.set(
         entry.work_id,
@@ -393,6 +481,235 @@ export default async function MeishoListPage() {
           </p>
         </header>
 
+        {/* 検索・絞り込み */}
+
+        <form
+          action="/meisho"
+          method="get"
+          style={{
+            marginBottom: '28px',
+            padding: '22px',
+            border: '1px solid #ddd7cc',
+            borderRadius: '10px',
+            background: '#fff',
+          }}
+        >
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns:
+                'minmax(220px, 2fr) minmax(160px, 1fr) minmax(160px, 1fr)',
+              gap: '12px',
+            }}
+          >
+            <div>
+              <label
+                htmlFor="meisho-search"
+                style={{
+                  display: 'block',
+                  marginBottom: '7px',
+                  color: '#766f65',
+                  fontSize: '0.78rem',
+                }}
+              >
+                名所を検索
+              </label>
+
+              <input
+                id="meisho-search"
+                name="q"
+                type="search"
+                defaultValue={query}
+                placeholder="名所名・読み・現在名・所在地など"
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  padding: '11px 13px',
+                  border: '1px solid #cfc8bd',
+                  borderRadius: '6px',
+                  background: '#fff',
+                  color: '#292722',
+                  font: 'inherit',
+                  fontSize: '0.9rem',
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="work-filter"
+                style={{
+                  display: 'block',
+                  marginBottom: '7px',
+                  color: '#766f65',
+                  fontSize: '0.78rem',
+                }}
+              >
+                作品
+              </label>
+
+              <select
+                id="work-filter"
+                name="work"
+                defaultValue={
+                  selectedWorkId !== null &&
+                  Number.isInteger(
+                    selectedWorkId
+                  )
+                    ? String(
+                        selectedWorkId
+                      )
+                    : ''
+                }
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  padding: '11px 12px',
+                  border: '1px solid #cfc8bd',
+                  borderRadius: '6px',
+                  background: '#fff',
+                  color: '#292722',
+                  font: 'inherit',
+                  fontSize: '0.9rem',
+                }}
+              >
+                <option value="">
+                  すべての作品
+                </option>
+
+                {[...workMap.values()]
+                  .sort(
+                    (a, b) =>
+                      a.id - b.id
+                  )
+                  .map((work) => (
+                    <option
+                      key={work.id}
+                      value={work.id}
+                    >
+                      {work.title}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="volume-filter"
+                style={{
+                  display: 'block',
+                  marginBottom: '7px',
+                  color: '#766f65',
+                  fontSize: '0.78rem',
+                }}
+              >
+                巻
+              </label>
+
+              <select
+                id="volume-filter"
+                name="volume"
+                defaultValue={
+                  selectedVolumeId !== null &&
+                  Number.isInteger(
+                    selectedVolumeId
+                  )
+                    ? String(
+                        selectedVolumeId
+                      )
+                    : ''
+                }
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  padding: '11px 12px',
+                  border: '1px solid #cfc8bd',
+                  borderRadius: '6px',
+                  background: '#fff',
+                  color: '#292722',
+                  font: 'inherit',
+                  fontSize: '0.9rem',
+                }}
+              >
+                <option value="">
+                  すべての巻
+                </option>
+
+                {publicVolumes.map(
+                  (volume) => {
+                    const work =
+                      workMap.get(
+                        volume.work_id
+                      )
+
+                    return (
+                      <option
+                        key={volume.id}
+                        value={volume.id}
+                      >
+                        {work?.title
+                          ? `${work.title} ／ `
+                          : ''}
+                        {volume.volume_label ??
+                          `巻 ${volume.volume_no ?? volume.id}`}
+                      </option>
+                    )
+                  }
+                )}
+              </select>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '10px',
+              marginTop: '14px',
+            }}
+          >
+            <button
+              type="submit"
+              style={{
+                padding: '10px 20px',
+                border: 0,
+                borderRadius: '6px',
+                background: '#3f4a45',
+                color: '#fff',
+                font: 'inherit',
+                fontSize: '0.88rem',
+                cursor: 'pointer',
+              }}
+            >
+              絞り込む
+            </button>
+
+            {(query ||
+              selectedWorkId !== null ||
+              selectedVolumeId !==
+                null) && (
+              <Link
+                href="/meisho"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '9px 18px',
+                  border:
+                    '1px solid #cfc8bd',
+                  borderRadius: '6px',
+                  background: '#fff',
+                  color: '#625b53',
+                  textDecoration:
+                    'none',
+                  fontSize: '0.88rem',
+                }}
+              >
+                条件をクリア
+              </Link>
+            )}
+          </div>
+        </form>
+
         {/* 概要 */}
 
         <div
@@ -420,9 +737,21 @@ export default async function MeishoListPage() {
                 color: '#292722',
               }}
             >
-              {entries.length}
+              {filteredEntries.length}
             </strong>
             件
+            {filteredEntries.length !==
+              entries.length && (
+              <span
+                style={{
+                  marginLeft: '5px',
+                  color: '#918981',
+                  fontSize: '0.78rem',
+                }}
+              >
+                ／ 全{entries.length}件
+              </span>
+            )}
           </div>
 
           <div
@@ -447,6 +776,55 @@ export default async function MeishoListPage() {
             作品
           </div>
         </div>
+
+        {/* 検索結果なし */}
+
+        {filteredEntries.length === 0 && (
+          <div
+            style={{
+              marginBottom: '54px',
+              padding: '34px 30px',
+              border: '1px solid #ddd7cd',
+              borderRadius: '10px',
+              background: '#fffdf9',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '1.05rem',
+                fontWeight: 600,
+              }}
+            >
+              条件に一致する名所はありません。
+            </div>
+
+            <p
+              style={{
+                margin:
+                  '10px 0 20px',
+                color: '#777068',
+                fontSize: '0.9rem',
+              }}
+            >
+              検索語や作品・巻の条件を変えてください。
+            </p>
+
+            <Link
+              href="/meisho"
+              style={{
+                color: '#59645f',
+                fontSize: '0.9rem',
+                textDecoration:
+                  'underline',
+                textUnderlineOffset:
+                  '3px',
+              }}
+            >
+              すべての名所を表示
+            </Link>
+          </div>
+        )}
 
         {/* 作品別 */}
 
