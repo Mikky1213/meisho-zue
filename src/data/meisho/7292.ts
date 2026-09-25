@@ -167,7 +167,13 @@ export const meisho7292: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://ik.imagekit.io/meisho/7292/Homyo-ji_(Toshima,_Tokyo).jfif',
+      caption: '法明寺',
+      alt: '威光山法明寺',
+    },
+  ],
 
   comparison: [
     {
