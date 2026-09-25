@@ -2,6 +2,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { supabase } from '../../src/lib/supabase'
 import { currentPlaces } from '../../src/data/currentPlaces'
+import {
+  getDbPublishedEntryIds,
+  mergePublishedEntries,
+  type PublishedEntry,
+} from '../../src/lib/publishedEntries'
 
 export const metadata: Metadata = {
   title: '名所一覧',
@@ -9,21 +14,6 @@ export const metadata: Metadata = {
     '名所図会に記された場所を、作品・巻ごとに一覧でたどります。原文、現代の姿、関連史料、現地写真を掲載しています。',
   alternates: {
     canonical: '/meisho',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'ja_JP',
-    url: '/meisho',
-    siteName: '名所図会 今昔',
-    title: '名所一覧',
-    description:
-      '名所図会に記された場所を、作品・巻ごとに一覧でたどります。',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '名所一覧 | 名所図会 今昔',
-    description:
-      '名所図会に記された場所を、作品・巻ごとに一覧でたどります。',
   },
 }
 
@@ -46,131 +36,50 @@ export default async function MeishoListPage({
       : ''
 
   const selectedWorkId =
-    typeof params.work === 'string' &&
-    params.work !== ''
+    typeof params.work === 'string' && params.work !== ''
       ? Number(params.work)
       : null
 
   const selectedVolumeId =
-    typeof params.volume === 'string' &&
-    params.volume !== ''
+    typeof params.volume === 'string' && params.volume !== ''
       ? Number(params.volume)
       : null
 
-  const entryIds = Object.keys(currentPlaces)
-    .map(Number)
-    .filter(Number.isInteger)
+  const dbIds = getDbPublishedEntryIds()
 
-  if (entryIds.length === 0) {
-    return (
-      <main
-        style={{
-          maxWidth: '1050px',
-          margin: '0 auto',
-          padding: '64px 24px 96px',
-          color: '#292722',
-        }}
-      >
-        <header
-          style={{
-            paddingBottom: '32px',
-            borderBottom: '1px solid #d8d3c8',
-          }}
-        >
-          <p
-            style={{
-              margin: '0 0 8px',
-              fontSize: '0.82rem',
-              letterSpacing: '0.18em',
-              color: '#837b70',
-            }}
-          >
-            MEISHO ZUE ARCHIVE
-          </p>
+  let dbEntries: PublishedEntry[] = []
+  let entriesError: { message: string } | null = null
 
-          <h1
-            style={{
-              margin: 0,
-              fontFamily:
-                '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
-              fontSize: 'clamp(2.1rem, 6vw, 3.2rem)',
-              fontWeight: 500,
-              letterSpacing: '0.06em',
-            }}
-          >
-            名所をたどる
-          </h1>
-        </header>
+  if (dbIds.length > 0) {
+    const result = await supabase
+      .from('entries')
+      .select(`
+        id,
+        work_id,
+        volume_id,
+        entry_order,
+        heading,
+        reading
+      `)
+      .in('id', dbIds)
 
-        <div
-          style={{
-            marginTop: '40px',
-            padding: '28px 30px',
-            border: '1px solid #ddd7cd',
-            borderRadius: '10px',
-            background: '#fffdf9',
-            color: '#777',
-          }}
-        >
-          まだ公開中の記事はありません。
-        </div>
-      </main>
-    )
+    dbEntries = (result.data ?? []) as PublishedEntry[]
+    entriesError = result.error
   }
 
-  // ------------------------------
-  // 公開中の記事
-  // ------------------------------
-
-  const {
-    data: entries,
-    error: entriesError,
-  } = await supabase
-    .from('entries')
-    .select(`
-      id,
-      work_id,
-      volume_id,
-      entry_order,
-      heading,
-      reading
-    `)
-    .in('id', entryIds)
-
-  if (entriesError || !entries) {
+  if (entriesError) {
     return (
-      <main
-        style={{
-          maxWidth: '1050px',
-          margin: '0 auto',
-          padding: '64px 24px 96px',
-        }}
-      >
+      <main className="archive-page">
         <h1>一覧取得エラー</h1>
-        <pre
-          style={{
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {entriesError?.message}
-        </pre>
+        <pre>{entriesError.message}</pre>
       </main>
     )
   }
 
-  // ------------------------------
-  // 作品・巻
-  // ------------------------------
+  const entries = mergePublishedEntries(dbEntries)
 
   const workIds = [
-    ...new Set(
-      entries
-        .map((entry) => entry.work_id)
-        .filter(
-          (id): id is number =>
-            typeof id === 'number'
-        )
-    ),
+    ...new Set(entries.map((entry) => entry.work_id)),
   ]
 
   const volumeIds = [
@@ -178,239 +87,143 @@ export default async function MeishoListPage({
       entries
         .map((entry) => entry.volume_id)
         .filter(
-          (id): id is number =>
-            typeof id === 'number'
+          (id): id is number => typeof id === 'number'
         )
     ),
   ]
 
-  const {
-    data: works,
-    error: worksError,
-  } = await supabase
-    .from('works')
-    .select(`
-      id,
-      title,
-      author,
-      editor,
-      illustrator,
-      published_year,
-      region
-    `)
-    .in('id', workIds)
+  const [worksResult, volumesResult] = await Promise.all([
+    supabase
+      .from('works')
+      .select(`
+        id,
+        title,
+        author,
+        editor,
+        illustrator,
+        published_year,
+        region
+      `)
+      .in('id', workIds),
+    supabase
+      .from('volumes')
+      .select(`
+        id,
+        work_id,
+        volume_no,
+        volume_label
+      `)
+      .in('id', volumeIds),
+  ])
 
-  if (worksError) {
+  if (worksResult.error || volumesResult.error) {
     return (
-      <main
-        style={{
-          maxWidth: '1050px',
-          margin: '0 auto',
-          padding: '64px 24px 96px',
-        }}
-      >
-        <h1>作品情報取得エラー</h1>
-        <pre
-          style={{
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {worksError.message}
+      <main className="archive-page">
+        <h1>作品・巻情報取得エラー</h1>
+        <pre>
+          {worksResult.error?.message ??
+            volumesResult.error?.message}
         </pre>
       </main>
     )
   }
 
-  const {
-    data: volumes,
-    error: volumesError,
-  } = await supabase
-    .from('volumes')
-    .select(`
-      id,
-      work_id,
-      volume_no,
-      volume_label
-    `)
-    .in('id', volumeIds)
-
-  if (volumesError) {
-    return (
-      <main
-        style={{
-          maxWidth: '1050px',
-          margin: '0 auto',
-          padding: '64px 24px 96px',
-        }}
-      >
-        <h1>巻情報取得エラー</h1>
-        <pre
-          style={{
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {volumesError.message}
-        </pre>
-      </main>
-    )
-  }
-
-  // ------------------------------
-  // 検索用Map
-  // ------------------------------
+  const works = worksResult.data ?? []
+  const volumes = volumesResult.data ?? []
 
   const workMap = new Map(
-    (works ?? []).map((work) => [
-      work.id,
-      work,
-    ])
+    works.map((work) => [work.id, work])
   )
 
   const volumeMap = new Map(
-    (volumes ?? []).map((volume) => [
-      volume.id,
-      volume,
-    ])
+    volumes.map((volume) => [volume.id, volume])
   )
 
-  // ------------------------------
-  // 作品 → 巻 → 名所 の順に並べる
-  // ------------------------------
-
-  const sortedEntries = [...entries].sort(
-    (a, b) => {
-      const workCompare =
-        a.work_id - b.work_id
-
-      if (workCompare !== 0) {
-        return workCompare
-      }
-
-      const aVolume =
-        typeof a.volume_id === 'number'
-          ? volumeMap.get(a.volume_id)
-          : undefined
-
-      const bVolume =
-        typeof b.volume_id === 'number'
-          ? volumeMap.get(b.volume_id)
-          : undefined
-
-      const aVolumeNo =
-        aVolume?.volume_no ??
-        Number.MAX_SAFE_INTEGER
-
-      const bVolumeNo =
-        bVolume?.volume_no ??
-        Number.MAX_SAFE_INTEGER
-
-      if (aVolumeNo !== bVolumeNo) {
-        return aVolumeNo - bVolumeNo
-      }
-
-      const orderCompare =
-        (a.entry_order ??
-          Number.MAX_SAFE_INTEGER) -
-        (b.entry_order ??
-          Number.MAX_SAFE_INTEGER)
-
-      if (orderCompare !== 0) {
-        return orderCompare
-      }
-
-      return a.id - b.id
+  const sortedEntries = [...entries].sort((a, b) => {
+    if (a.work_id !== b.work_id) {
+      return a.work_id - b.work_id
     }
-  )
 
-  // ------------------------------
-  // 検索・絞り込み
-  // ------------------------------
+    const aVolumeNo =
+      a.volume_id !== null
+        ? volumeMap.get(a.volume_id)?.volume_no ??
+          Number.MAX_SAFE_INTEGER
+        : Number.MAX_SAFE_INTEGER
+
+    const bVolumeNo =
+      b.volume_id !== null
+        ? volumeMap.get(b.volume_id)?.volume_no ??
+          Number.MAX_SAFE_INTEGER
+        : Number.MAX_SAFE_INTEGER
+
+    if (aVolumeNo !== bVolumeNo) {
+      return aVolumeNo - bVolumeNo
+    }
+
+    const orderCompare =
+      (a.entry_order ?? Number.MAX_SAFE_INTEGER) -
+      (b.entry_order ?? Number.MAX_SAFE_INTEGER)
+
+    return orderCompare !== 0
+      ? orderCompare
+      : a.id - b.id
+  })
 
   const normalizedQuery =
     query.toLocaleLowerCase('ja-JP')
 
-  const filteredEntries =
-    sortedEntries.filter((entry) => {
-      if (
-        selectedWorkId !== null &&
-        Number.isInteger(selectedWorkId) &&
-        entry.work_id !== selectedWorkId
-      ) {
-        return false
-      }
+  const filteredEntries = sortedEntries.filter((entry) => {
+    if (
+      selectedWorkId !== null &&
+      Number.isInteger(selectedWorkId) &&
+      entry.work_id !== selectedWorkId
+    ) {
+      return false
+    }
 
-      if (
-        selectedVolumeId !== null &&
-        Number.isInteger(selectedVolumeId) &&
-        entry.volume_id !== selectedVolumeId
-      ) {
-        return false
-      }
+    if (
+      selectedVolumeId !== null &&
+      Number.isInteger(selectedVolumeId) &&
+      entry.volume_id !== selectedVolumeId
+    ) {
+      return false
+    }
 
-      if (!normalizedQuery) {
-        return true
-      }
+    if (!normalizedQuery) {
+      return true
+    }
 
-      const currentPlace =
-        currentPlaces[entry.id]
+    const current = currentPlaces[entry.id]
 
-      const searchableText = [
-        entry.heading,
-        entry.reading ?? '',
-        currentPlace?.currentName ?? '',
-        currentPlace?.address ?? '',
-        currentPlace?.description ?? '',
-      ]
-        .join(' ')
-        .toLocaleLowerCase('ja-JP')
-
-      return searchableText.includes(
-        normalizedQuery
-      )
-    })
-
-  const publicVolumes =
-    [...volumeMap.values()].sort(
-      (a, b) => {
-        if (a.work_id !== b.work_id) {
-          return a.work_id - b.work_id
-        }
-
-        return (
-          (a.volume_no ??
-            Number.MAX_SAFE_INTEGER) -
-          (b.volume_no ??
-            Number.MAX_SAFE_INTEGER)
-        )
-      }
-    )
+    return [
+      entry.heading,
+      entry.reading ?? '',
+      current?.currentName ?? '',
+      current?.address ?? '',
+      current?.description ?? '',
+    ]
+      .join(' ')
+      .toLocaleLowerCase('ja-JP')
+      .includes(normalizedQuery)
+  })
 
   const grouped = new Map<
     number,
-    Map<number | null, typeof filteredEntries>
+    Map<number | null, PublishedEntry[]>
   >()
 
   for (const entry of filteredEntries) {
     if (!grouped.has(entry.work_id)) {
-      grouped.set(
-        entry.work_id,
-        new Map()
-      )
+      grouped.set(entry.work_id, new Map())
     }
 
-    const workGroup =
-      grouped.get(entry.work_id)!
+    const workGroup = grouped.get(entry.work_id)!
 
     if (!workGroup.has(entry.volume_id)) {
-      workGroup.set(
-        entry.volume_id,
-        []
-      )
+      workGroup.set(entry.volume_id, [])
     }
 
-    workGroup
-      .get(entry.volume_id)!
-      .push(entry)
+    workGroup.get(entry.volume_id)!.push(entry)
   }
 
   return (
@@ -430,14 +243,11 @@ export default async function MeishoListPage({
           lineHeight: 1.8,
         }}
       >
-        {/* ページヘッダー */}
-
         <header
           style={{
             marginBottom: '42px',
             paddingBottom: '32px',
-            borderBottom:
-              '1px solid #d8d3c8',
+            borderBottom: '1px solid #d8d3c8',
           }}
         >
           <p
@@ -450,44 +260,25 @@ export default async function MeishoListPage({
           >
             MEISHO ZUE ARCHIVE
           </p>
-
           <h1
             style={{
               margin: 0,
               fontFamily:
                 '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
-              fontSize:
-                'clamp(2.1rem, 6vw, 3.2rem)',
-              lineHeight: 1.3,
+              fontSize: 'clamp(2.1rem, 6vw, 3.2rem)',
               fontWeight: 500,
               letterSpacing: '0.06em',
             }}
           >
             名所をたどる
           </h1>
-
-          <p
-            style={{
-              margin: '18px 0 0',
-              maxWidth: '720px',
-              color: '#686159',
-              fontSize: '0.98rem',
-              lineHeight: 1.95,
-            }}
-          >
-            名所図会に記された場所を、
-            作品・巻の順に一覧で掲載しています。
-            原文から現在の姿、関連史料、現地写真へとたどることができます。
-          </p>
         </header>
-
-        {/* 検索・絞り込み */}
 
         <form
           action="/meisho"
           method="get"
           style={{
-            marginBottom: '28px',
+            marginBottom: '34px',
             padding: '22px',
             border: '1px solid #ddd7cc',
             borderRadius: '10px',
@@ -498,844 +289,206 @@ export default async function MeishoListPage({
             style={{
               display: 'grid',
               gridTemplateColumns:
-                'repeat(auto-fit, minmax(220px, 1fr))',
+                'repeat(auto-fit, minmax(210px, 1fr))',
               gap: '12px',
             }}
           >
-            <div>
-              <label
-                htmlFor="meisho-search"
-                style={{
-                  display: 'block',
-                  marginBottom: '7px',
-                  color: '#766f65',
-                  fontSize: '0.78rem',
-                }}
-              >
-                名所を検索
-              </label>
+            <input
+              name="q"
+              type="search"
+              defaultValue={query}
+              placeholder="名所名・現在名・所在地など"
+              style={{ padding: '11px 13px' }}
+            />
 
-              <input
-                id="meisho-search"
-                name="q"
-                type="search"
-                defaultValue={query}
-                placeholder="名所名・読み・現在名・所在地など"
-                style={{
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  padding: '11px 13px',
-                  border: '1px solid #cfc8bd',
-                  borderRadius: '6px',
-                  background: '#fff',
-                  color: '#292722',
-                  font: 'inherit',
-                  fontSize: '0.9rem',
-                }}
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="work-filter"
-                style={{
-                  display: 'block',
-                  marginBottom: '7px',
-                  color: '#766f65',
-                  fontSize: '0.78rem',
-                }}
-              >
-                作品
-              </label>
-
-              <select
-                id="work-filter"
-                name="work"
-                defaultValue={
-                  selectedWorkId !== null &&
-                  Number.isInteger(
-                    selectedWorkId
-                  )
-                    ? String(
-                        selectedWorkId
-                      )
-                    : ''
-                }
-                style={{
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  padding: '11px 12px',
-                  border: '1px solid #cfc8bd',
-                  borderRadius: '6px',
-                  background: '#fff',
-                  color: '#292722',
-                  font: 'inherit',
-                  fontSize: '0.9rem',
-                }}
-              >
-                <option value="">
-                  すべての作品
-                </option>
-
-                {[...workMap.values()]
-                  .sort(
-                    (a, b) =>
-                      a.id - b.id
-                  )
-                  .map((work) => (
-                    <option
-                      key={work.id}
-                      value={work.id}
-                    >
-                      {work.title}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="volume-filter"
-                style={{
-                  display: 'block',
-                  marginBottom: '7px',
-                  color: '#766f65',
-                  fontSize: '0.78rem',
-                }}
-              >
-                巻
-              </label>
-
-              <select
-                id="volume-filter"
-                name="volume"
-                defaultValue={
-                  selectedVolumeId !== null &&
-                  Number.isInteger(
-                    selectedVolumeId
-                  )
-                    ? String(
-                        selectedVolumeId
-                      )
-                    : ''
-                }
-                style={{
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  padding: '11px 12px',
-                  border: '1px solid #cfc8bd',
-                  borderRadius: '6px',
-                  background: '#fff',
-                  color: '#292722',
-                  font: 'inherit',
-                  fontSize: '0.9rem',
-                }}
-              >
-                <option value="">
-                  すべての巻
-                </option>
-
-                {publicVolumes.map(
-                  (volume) => {
-                    const work =
-                      workMap.get(
-                        volume.work_id
-                      )
-
-                    return (
-                      <option
-                        key={volume.id}
-                        value={volume.id}
-                      >
-                        {work?.title
-                          ? `${work.title} ／ `
-                          : ''}
-                        {volume.volume_label ??
-                          `巻 ${volume.volume_no ?? volume.id}`}
-                      </option>
-                    )
-                  }
-                )}
-              </select>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '10px',
-              marginTop: '14px',
-            }}
-          >
-            <button
-              type="submit"
-              style={{
-                padding: '10px 20px',
-                border: 0,
-                borderRadius: '6px',
-                background: '#3f4a45',
-                color: '#fff',
-                font: 'inherit',
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-              }}
+            <select
+              name="work"
+              defaultValue={
+                selectedWorkId !== null
+                  ? String(selectedWorkId)
+                  : ''
+              }
+              style={{ padding: '11px 12px' }}
             >
-              絞り込む
-            </button>
+              <option value="">すべての作品</option>
+              {[...workMap.values()]
+                .sort((a, b) => a.id - b.id)
+                .map((work) => (
+                  <option key={work.id} value={work.id}>
+                    {work.title}
+                  </option>
+                ))}
+            </select>
 
-            {(query ||
-              selectedWorkId !== null ||
-              selectedVolumeId !==
-                null) && (
-              <Link
-                href="/meisho"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '9px 18px',
-                  border:
-                    '1px solid #cfc8bd',
-                  borderRadius: '6px',
-                  background: '#fff',
-                  color: '#625b53',
-                  textDecoration:
-                    'none',
-                  fontSize: '0.88rem',
-                }}
-              >
-                条件をクリア
-              </Link>
-            )}
+            <select
+              name="volume"
+              defaultValue={
+                selectedVolumeId !== null
+                  ? String(selectedVolumeId)
+                  : ''
+              }
+              style={{ padding: '11px 12px' }}
+            >
+              <option value="">すべての巻</option>
+              {[...volumeMap.values()]
+                .sort(
+                  (a, b) =>
+                    (a.volume_no ?? Number.MAX_SAFE_INTEGER) -
+                    (b.volume_no ?? Number.MAX_SAFE_INTEGER)
+                )
+                .map((volume) => (
+                  <option key={volume.id} value={volume.id}>
+                    {volume.volume_label ??
+                      `巻 ${volume.volume_no ?? volume.id}`}
+                  </option>
+                ))}
+            </select>
+
+            <button type="submit">絞り込む</button>
           </div>
         </form>
 
-        {/* 概要 */}
-
         <div
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '12px',
-            marginBottom: '54px',
+            marginBottom: '30px',
+            color: '#777068',
+            fontSize: '0.9rem',
           }}
         >
-          <div
-            style={{
-              padding: '10px 15px',
-              border: '1px solid #ddd7cc',
-              borderRadius: '999px',
-              background: '#fff',
-              color: '#696158',
-              fontSize: '0.84rem',
-            }}
-          >
-            公開名所
-            <strong
-              style={{
-                marginLeft: '7px',
-                color: '#292722',
-              }}
-            >
-              {filteredEntries.length}
-            </strong>
-            件
-            {filteredEntries.length !==
-              entries.length && (
-              <span
-                style={{
-                  marginLeft: '5px',
-                  color: '#918981',
-                  fontSize: '0.78rem',
-                }}
-              >
-                ／ 全{entries.length}件
-              </span>
-            )}
-          </div>
-
-          <div
-            style={{
-              padding: '10px 15px',
-              border: '1px solid #ddd7cc',
-              borderRadius: '999px',
-              background: '#fff',
-              color: '#696158',
-              fontSize: '0.84rem',
-            }}
-          >
-            公開作品
-            <strong
-              style={{
-                marginLeft: '7px',
-                color: '#292722',
-              }}
-            >
-              {grouped.size}
-            </strong>
-            作品
-          </div>
+          公開中 {filteredEntries.length}件
         </div>
-
-        {/* 検索結果なし */}
-
-        {filteredEntries.length === 0 && (
-          <div
-            style={{
-              marginBottom: '54px',
-              padding: '34px 30px',
-              border: '1px solid #ddd7cd',
-              borderRadius: '10px',
-              background: '#fffdf9',
-              textAlign: 'center',
-            }}
-          >
-            <div
-              style={{
-                fontSize: '1.05rem',
-                fontWeight: 600,
-              }}
-            >
-              条件に一致する名所はありません。
-            </div>
-
-            <p
-              style={{
-                margin:
-                  '10px 0 20px',
-                color: '#777068',
-                fontSize: '0.9rem',
-              }}
-            >
-              検索語や作品・巻の条件を変えてください。
-            </p>
-
-            <Link
-              href="/meisho"
-              style={{
-                color: '#59645f',
-                fontSize: '0.9rem',
-                textDecoration:
-                  'underline',
-                textUnderlineOffset:
-                  '3px',
-              }}
-            >
-              すべての名所を表示
-            </Link>
-          </div>
-        )}
-
-        {/* 作品別 */}
 
         {[...grouped.entries()].map(
           ([workId, volumeGroups]) => {
-            const work =
-              workMap.get(workId)
-
-            const workEntryCount =
-              [...volumeGroups.values()]
-                .reduce(
-                  (
-                    total,
-                    groupEntries
-                  ) =>
-                    total +
-                    groupEntries.length,
-                  0
-                )
+            const work = workMap.get(workId)
 
             return (
               <section
                 key={workId}
-                style={{
-                  marginBottom: '84px',
-                }}
+                style={{ marginBottom: '64px' }}
               >
-                {/* 作品情報 */}
-
-                <div
+                <h2
                   style={{
-                    marginBottom: '36px',
-                    padding:
-                      '28px 30px 26px',
-                    border:
-                      '1px solid #d7d0c4',
-                    borderRadius: '10px',
-                    background: '#f6f2e9',
+                    fontSize: '1.6rem',
+                    marginBottom: '28px',
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      alignItems: 'flex-end',
-                      justifyContent:
-                        'space-between',
-                      gap: '18px',
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          marginBottom: '5px',
-                          color: '#928877',
-                          fontSize: '0.75rem',
-                          letterSpacing:
-                            '0.12em',
-                        }}
+                  {work?.title ?? '作品'}
+                </h2>
+
+                {[...volumeGroups.entries()].map(
+                  ([volumeId, volumeEntries]) => {
+                    const volume =
+                      volumeId !== null
+                        ? volumeMap.get(volumeId)
+                        : undefined
+
+                    return (
+                      <section
+                        key={volumeId ?? 'none'}
+                        style={{ marginBottom: '44px' }}
                       >
-                        WORK
-                      </div>
-
-                      <h2
-                        style={{
-                          margin: 0,
-                          fontFamily:
-                            '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
-                          fontSize:
-                            'clamp(1.6rem, 5vw, 2.15rem)',
-                          lineHeight: 1.4,
-                          fontWeight: 600,
-                          letterSpacing:
-                            '0.06em',
-                        }}
-                      >
-                        {work?.title ??
-                          `作品 ${workId}`}
-                      </h2>
-                    </div>
-
-                    <div
-                      style={{
-                        color: '#7c7469',
-                        fontSize: '0.85rem',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {workEntryCount}件公開
-                    </div>
-                  </div>
-
-                  {work && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: '6px 20px',
-                        marginTop: '16px',
-                        paddingTop: '15px',
-                        borderTop:
-                          '1px solid #ded7cb',
-                        color: '#746c62',
-                        fontSize: '0.83rem',
-                      }}
-                    >
-                      {work.author && (
-                        <span>
-                          著：{work.author}
-                        </span>
-                      )}
-
-                      {work.editor && (
-                        <span>
-                          編：{work.editor}
-                        </span>
-                      )}
-
-                      {work.illustrator && (
-                        <span>
-                          画：{work.illustrator}
-                        </span>
-                      )}
-
-                      {work.published_year && (
-                        <span>
-                          {work.published_year}
-                        </span>
-                      )}
-
-                      {work.region && (
-                        <span>
-                          地域：{work.region}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* 巻別 */}
-
-                {[...volumeGroups.entries()]
-                  .sort(
-                    ([aId], [bId]) => {
-                      const a =
-                        typeof aId ===
-                        'number'
-                          ? volumeMap.get(
-                              aId
-                            )
-                          : undefined
-
-                      const b =
-                        typeof bId ===
-                        'number'
-                          ? volumeMap.get(
-                              bId
-                            )
-                          : undefined
-
-                      return (
-                        (a?.volume_no ??
-                          Number.MAX_SAFE_INTEGER) -
-                        (b?.volume_no ??
-                          Number.MAX_SAFE_INTEGER)
-                      )
-                    }
-                  )
-                  .map(
-                    ([
-                      volumeId,
-                      volumeEntries,
-                    ]) => {
-                      const volume =
-                        typeof volumeId ===
-                        'number'
-                          ? volumeMap.get(
-                              volumeId
-                            )
-                          : undefined
-
-                      return (
-                        <section
-                          key={
-                            volumeId ??
-                            'no-volume'
-                          }
+                        <h3
                           style={{
-                            marginBottom:
-                              '52px',
+                            marginBottom: '18px',
+                            fontSize: '1.2rem',
                           }}
                         >
-                          {/* 巻名 */}
+                          {volume?.volume_label ?? '巻未設定'}
+                        </h3>
 
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems:
-                                'center',
-                              gap: '14px',
-                              marginBottom:
-                                '22px',
-                            }}
-                          >
-                            <h3
-                              style={{
-                                margin: 0,
-                                fontSize:
-                                  '1.25rem',
-                                fontWeight:
-                                  600,
-                                letterSpacing:
-                                  '0.07em',
-                                whiteSpace:
-                                  'nowrap',
-                              }}
-                            >
-                              {volume?.volume_label ??
-                                '巻未設定'}
-                            </h3>
+                        <div className="archive-card-grid">
+                          {volumeEntries.map((entry) => {
+                            const current =
+                              currentPlaces[entry.id]
+                            const photo =
+                              current?.photos?.[0]
 
-                            <div
-                              style={{
-                                flex: 1,
-                                height: '1px',
-                                background:
-                                  '#ddd7cc',
-                              }}
-                            />
-
-                            <span
-                              style={{
-                                color:
-                                  '#999188',
-                                fontSize:
-                                  '0.8rem',
-                                whiteSpace:
-                                  'nowrap',
-                              }}
-                            >
-                              {
-                                volumeEntries.length
-                              }
-                              件
-                            </span>
-                          </div>
-
-                          {/* 名所カード */}
-
-                          <div
-                            style={{
-                              display: 'grid',
-                              gridTemplateColumns:
-                                'repeat(auto-fit, minmax(280px, 1fr))',
-                              gap: '20px',
-                            }}
-                          >
-                            {volumeEntries.map(
-                              (entry) => {
-                                const currentPlace =
-                                  currentPlaces[
-                                    entry.id
-                                  ]
-
-                                const photo =
-                                  currentPlace
-                                    ?.photos?.[0]
-
-                                return (
-                                  <Link
-                                    key={
-                                      entry.id
-                                    }
-                                    href={`/meisho/${entry.id}`}
+                            return (
+                              <Link
+                                key={entry.id}
+                                href={`/meisho/${entry.id}`}
+                                className="archive-card"
+                                style={{
+                                  padding: 0,
+                                  overflow: 'hidden',
+                                }}
+                              >
+                                {photo && (
+                                  <div
                                     style={{
-                                      display:
-                                        'block',
-                                      height:
-                                        '100%',
-                                      color:
-                                        'inherit',
-                                      textDecoration:
-                                        'none',
+                                      aspectRatio: '16 / 9',
+                                      overflow: 'hidden',
+                                      background: '#eee9e0',
                                     }}
                                   >
-                                    <article
+                                    <img
+                                      src={photo.url}
+                                      alt={
+                                        photo.alt ||
+                                        photo.caption ||
+                                        current?.currentName ||
+                                        entry.heading
+                                      }
+                                      loading="lazy"
                                       style={{
-                                        display:
-                                          'flex',
-                                        flexDirection:
-                                          'column',
-                                        height:
-                                          '100%',
-                                        boxSizing:
-                                          'border-box',
-                                        overflow:
-                                          'hidden',
-                                        border:
-                                          '1px solid #ddd8ce',
-                                        borderRadius:
-                                          '10px',
-                                        background:
-                                          '#fff',
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
                                       }}
-                                    >
-                                      {photo && (
-                                        <div
-                                          style={{
-                                            aspectRatio:
-                                              '16 / 9',
-                                            overflow:
-                                              'hidden',
-                                            background:
-                                              '#eee9e0',
-                                          }}
-                                        >
-                                          <img
-                                            src={
-                                              photo.url
-                                            }
-                                            alt={
-                                              photo.alt ||
-                                              photo.caption ||
-                                              currentPlace?.currentName ||
-                                              entry.heading
-                                            }
-                                            loading="lazy"
-                                            style={{
-                                              display:
-                                                'block',
-                                              width:
-                                                '100%',
-                                              height:
-                                                '100%',
-                                              objectFit:
-                                                'cover',
-                                            }}
-                                          />
-                                        </div>
-                                      )}
+                                    />
+                                  </div>
+                                )}
 
+                                <div style={{ padding: '22px 23px' }}>
+                                  <div
+                                    style={{
+                                      marginBottom: '10px',
+                                      color: '#aaa198',
+                                      fontSize: '0.74rem',
+                                    }}
+                                  >
+                                    {entry.entry_order != null
+                                      ? `第${entry.entry_order}項`
+                                      : '名所'}
+                                  </div>
+
+                                  <h3
+                                    style={{
+                                      margin: 0,
+                                      fontSize: '1.25rem',
+                                      lineHeight: 1.5,
+                                    }}
+                                  >
+                                    {entry.heading}
+                                  </h3>
+
+                                  {current?.currentName &&
+                                    current.currentName !==
+                                      entry.heading && (
                                       <div
                                         style={{
-                                          display:
-                                            'flex',
-                                          flexDirection:
-                                            'column',
-                                          flex: 1,
-                                          padding:
-                                            '23px 24px 22px',
+                                          marginTop: '15px',
+                                          color: '#65716d',
+                                          fontSize: '0.85rem',
                                         }}
                                       >
-                                        <div
-                                          style={{
-                                            marginBottom:
-                                              '12px',
-                                            color:
-                                              '#aaa198',
-                                            fontSize:
-                                              '0.73rem',
-                                            letterSpacing:
-                                              '0.06em',
-                                          }}
-                                        >
-                                          {entry.entry_order !=
-                                          null
-                                            ? `第${entry.entry_order}項`
-                                            : '名所'}
-                                        </div>
-
-                                        <h4
-                                          style={{
-                                            margin:
-                                              '0 0 5px',
-                                            fontFamily:
-                                              '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
-                                            fontSize:
-                                              '1.35rem',
-                                            lineHeight:
-                                              1.5,
-                                            fontWeight:
-                                              600,
-                                            letterSpacing:
-                                              '0.03em',
-                                          }}
-                                        >
-                                          {
-                                            entry.heading
-                                          }
-                                        </h4>
-
-                                        {entry.reading && (
-                                          <div
-                                            style={{
-                                              color:
-                                                '#918981',
-                                              fontSize:
-                                                '0.82rem',
-                                            }}
-                                          >
-                                            {
-                                              entry.reading
-                                            }
-                                          </div>
-                                        )}
-
-                                        {currentPlace?.currentName &&
-                                          currentPlace.currentName !==
-                                            entry.heading && (
-                                            <div
-                                              style={{
-                                                marginTop:
-                                                  '17px',
-                                                paddingTop:
-                                                  '14px',
-                                                borderTop:
-                                                  '1px solid #eeeae2',
-                                                fontSize:
-                                                  '0.9rem',
-                                                lineHeight:
-                                                  1.65,
-                                              }}
-                                            >
-                                              <span
-                                                style={{
-                                                  marginRight:
-                                                    '8px',
-                                                  color:
-                                                    '#8e867c',
-                                                  fontSize:
-                                                    '0.78rem',
-                                                }}
-                                              >
-                                                現在
-                                              </span>
-
-                                              {
-                                                currentPlace.currentName
-                                              }
-                                            </div>
-                                          )}
-
-                                        {currentPlace?.description && (
-                                          <p
-                                            style={{
-                                              margin:
-                                                '14px 0 0',
-                                              color:
-                                                '#6c655d',
-                                              fontSize:
-                                                '0.86rem',
-                                              lineHeight:
-                                                1.75,
-                                            }}
-                                          >
-                                            {
-                                              currentPlace.description
-                                            }
-                                          </p>
-                                        )}
-
-                                        <div
-                                          style={{
-                                            marginTop:
-                                              'auto',
-                                            paddingTop:
-                                              '22px',
-                                            color:
-                                              '#565f5b',
-                                            fontSize:
-                                              '0.84rem',
-                                            fontWeight:
-                                              600,
-                                          }}
-                                        >
-                                          記事を見る
-                                          →
-                                        </div>
+                                        現在：{current.currentName}
                                       </div>
-                                    </article>
-                                  </Link>
-                                )
-                              }
-                            )}
-                          </div>
-                        </section>
-                      )
-                    }
-                  )}
+                                    )}
+                                </div>
+                              </Link>
+                            )
+                          })}
+                        </div>
+                      </section>
+                    )
+                  }
+                )}
               </section>
             )
           }
         )}
-
-        <div
-          style={{
-            paddingTop: '10px',
-            textAlign: 'center',
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              color: '#6c655d',
-              fontSize: '0.9rem',
-              textDecoration: 'none',
-            }}
-          >
-            ← トップページへ戻る
-          </Link>
-        </div>
       </div>
     </main>
   )
