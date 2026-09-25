@@ -33,6 +33,14 @@ export type TranslationItem = {
   text: string
 }
 
+export type SourceEntryLink = {
+  workId: number
+  volumeId: number
+  entryOrder: number
+  heading: string
+  reading?: string
+}
+
 export type CurrentPlace = {
   currentName: string
   address: string
@@ -45,6 +53,8 @@ export type CurrentPlace = {
   comparison?: ComparisonItem[]
 
   translation?: TranslationItem[]
+
+  sourceEntry?: SourceEntryLink
 }
 
 export const currentPlaces: Record<number, CurrentPlace> = {
