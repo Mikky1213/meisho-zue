@@ -1,23 +1,20 @@
 import Link from 'next/link'
 import { supabase } from '../src/lib/supabase'
 import { currentPlaces } from '../src/data/currentPlaces'
+import {
+  getDbPublishedEntryIds,
+  mergePublishedEntries,
+  type PublishedEntry,
+} from '../src/lib/publishedEntries'
 
 const heroImageUrl =
   'https://ik.imagekit.io/meisho/site/edo-meisho-zue.png?tr=w-2000,f-webp,q-85'
 
 export default async function Home() {
-  const registeredEntryIds = Object.keys(currentPlaces)
-    .map(Number)
-    .filter(Number.isInteger)
+  const registeredEntryIds =
+    getDbPublishedEntryIds()
 
-  let entries: {
-    id: number
-    work_id: number
-    volume_id: number | null
-    entry_order: number | null
-    heading: string
-    reading: string | null
-  }[] = []
+  let dbEntries: PublishedEntry[] = []
 
   let entriesError: {
     message: string
@@ -36,9 +33,13 @@ export default async function Home() {
       `)
       .in('id', registeredEntryIds)
 
-    entries = result.data ?? []
+    dbEntries =
+      (result.data ?? []) as PublishedEntry[]
     entriesError = result.error
   }
+
+  const entries =
+    mergePublishedEntries(dbEntries)
 
   const workIds = [
     ...new Set(
