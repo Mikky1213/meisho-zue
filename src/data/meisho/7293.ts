@@ -22,7 +22,14 @@ export const meisho7293: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://ik.imagekit.io/meisho/7293/caption.jpg',
+    },
+    {
+      url: 'https://ik.imagekit.io/meisho/7293/G9pxfaabIAEe-Ap.jpg',
+    },
+  ],
 
   documents: [],
 
