@@ -3,6 +3,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { supabase } from '../../../src/lib/supabase'
 import { currentPlaces } from '../../../src/data/currentPlaces'
+import {
+  getDbPublishedEntryIds,
+  mergePublishedEntries,
+  type PublishedEntry,
+} from '../../../src/lib/publishedEntries'
 import JsonLd from '../../../src/components/JsonLd'
 import { absoluteUrl } from '../../../src/lib/site'
 
@@ -19,48 +24,29 @@ export async function generateMetadata({
   const id = Number(workId)
 
   if (!Number.isInteger(id)) {
-    return {
-      title: '作品',
-    }
+    return { title: '作品' }
   }
 
   const { data: work } = await supabase
     .from('works')
-    .select('id, title, author, published_year')
+    .select('id, title')
     .eq('id', id)
     .single()
 
-  if (!work) {
-    return {
-      title: '作品',
-    }
-  }
-
-  return {
-    title: work.title,
-    description:
-      `${work.title}の公開中の巻・名所を一覧します。`,
-    alternates: {
-      canonical: `/works/${id}`,
-    },
-  }
+  return work
+    ? {
+        title: work.title,
+        description: `${work.title}の公開中の巻・名所を一覧します。`,
+        alternates: { canonical: `/works/${id}` },
+      }
+    : { title: '作品' }
 }
 
-export default async function WorkPage({
-  params,
-}: Props) {
+export default async function WorkPage({ params }: Props) {
   const { workId } = await params
   const id = Number(workId)
 
   if (!Number.isInteger(id)) {
-    notFound()
-  }
-
-  const entryIds = Object.keys(currentPlaces)
-    .map(Number)
-    .filter(Number.isInteger)
-
-  if (entryIds.length === 0) {
     notFound()
   }
 
@@ -86,30 +72,38 @@ export default async function WorkPage({
     notFound()
   }
 
-  const {
-    data: entries,
-    error: entriesError,
-  } = await supabase
-    .from('entries')
-    .select(`
-      id,
-      work_id,
-      volume_id,
-      entry_order,
-      heading,
-      reading
-    `)
-    .eq('work_id', id)
-    .in('id', entryIds)
+  const dbIds = getDbPublishedEntryIds()
 
-  if (entriesError || !entries) {
-    return (
-      <main className="archive-page">
-        <h1>名所取得エラー</h1>
-        <pre>{entriesError?.message}</pre>
-      </main>
-    )
+  let dbEntries: PublishedEntry[] = []
+
+  if (dbIds.length > 0) {
+    const { data, error } = await supabase
+      .from('entries')
+      .select(`
+        id,
+        work_id,
+        volume_id,
+        entry_order,
+        heading,
+        reading
+      `)
+      .eq('work_id', id)
+      .in('id', dbIds)
+
+    if (error) {
+      return (
+        <main className="archive-page">
+          <h1>名所取得エラー</h1>
+          <pre>{error.message}</pre>
+        </main>
+      )
+    }
+
+    dbEntries = (data ?? []) as PublishedEntry[]
   }
+
+  const entries = mergePublishedEntries(dbEntries)
+    .filter((entry) => entry.work_id === id)
 
   if (entries.length === 0) {
     notFound()
@@ -126,10 +120,7 @@ export default async function WorkPage({
     ),
   ]
 
-  const {
-    data: volumes,
-    error: volumesError,
-  } = await supabase
+  const { data: volumes } = await supabase
     .from('volumes')
     .select(`
       id,
@@ -141,154 +132,68 @@ export default async function WorkPage({
     `)
     .in('id', volumeIds)
 
-  if (volumesError) {
-    return (
-      <main className="archive-page">
-        <h1>巻情報取得エラー</h1>
-        <pre>{volumesError.message}</pre>
-      </main>
-    )
-  }
-
   const volumeMap = new Map(
-    (volumes ?? []).map((volume) => [
-      volume.id,
-      volume,
-    ])
+    (volumes ?? []).map((volume) => [volume.id, volume])
   )
 
-  const sortedEntries = [...entries].sort(
-    (a, b) => {
-      const aVolumeNo =
-        typeof a.volume_id === 'number'
-          ? volumeMap.get(a.volume_id)?.volume_no ??
-            Number.MAX_SAFE_INTEGER
-          : Number.MAX_SAFE_INTEGER
+  const sortedEntries = [...entries].sort((a, b) => {
+    const aVolumeNo =
+      a.volume_id !== null
+        ? volumeMap.get(a.volume_id)?.volume_no ??
+          Number.MAX_SAFE_INTEGER
+        : Number.MAX_SAFE_INTEGER
 
-      const bVolumeNo =
-        typeof b.volume_id === 'number'
-          ? volumeMap.get(b.volume_id)?.volume_no ??
-            Number.MAX_SAFE_INTEGER
-          : Number.MAX_SAFE_INTEGER
+    const bVolumeNo =
+      b.volume_id !== null
+        ? volumeMap.get(b.volume_id)?.volume_no ??
+          Number.MAX_SAFE_INTEGER
+        : Number.MAX_SAFE_INTEGER
 
-      if (aVolumeNo !== bVolumeNo) {
-        return aVolumeNo - bVolumeNo
-      }
-
-      return (
-        (a.entry_order ??
-          Number.MAX_SAFE_INTEGER) -
-        (b.entry_order ??
-          Number.MAX_SAFE_INTEGER)
-      )
+    if (aVolumeNo !== bVolumeNo) {
+      return aVolumeNo - bVolumeNo
     }
-  )
 
-  const grouped = new Map<
-    number | null,
-    typeof sortedEntries
-  >()
+    return (
+      (a.entry_order ?? Number.MAX_SAFE_INTEGER) -
+      (b.entry_order ?? Number.MAX_SAFE_INTEGER)
+    )
+  })
+
+  const grouped = new Map<number | null, PublishedEntry[]>()
 
   for (const entry of sortedEntries) {
     if (!grouped.has(entry.volume_id)) {
       grouped.set(entry.volume_id, [])
     }
 
-    grouped
-      .get(entry.volume_id)!
-      .push(entry)
+    grouped.get(entry.volume_id)!.push(entry)
   }
 
-  const workJsonLd = [
-    {
-      '@context':
-        'https://schema.org',
-      '@type':
-        'CollectionPage',
-      name: work.title,
-      url: absoluteUrl(
-        `/works/${work.id}`
-      ),
-      inLanguage: 'ja',
-      about: {
-        '@type':
-          'CreativeWork',
-        name:
-          work.title,
-        creator:
-          work.author
-            ? {
-                '@type':
-                  'Person',
-                name:
-                  work.author,
-              }
-            : undefined,
-      },
-    },
-    {
-      '@context':
-        'https://schema.org',
-      '@type':
-        'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type':
-            'ListItem',
-          position: 1,
-          name: 'ホーム',
-          item:
-            absoluteUrl('/'),
-        },
-        {
-          '@type':
-            'ListItem',
-          position: 2,
-          name: '作品一覧',
-          item:
-            absoluteUrl('/works'),
-        },
-        {
-          '@type':
-            'ListItem',
-          position: 3,
-          name:
-            work.title,
-          item:
-            absoluteUrl(
-              `/works/${work.id}`
-            ),
-        },
-      ],
-    },
-  ]
+  const workJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: work.title,
+    url: absoluteUrl(`/works/${work.id}`),
+    inLanguage: 'ja',
+  }
 
-  const volumeGroups = [
-    ...grouped.entries(),
-  ].sort(([aId], [bId]) => {
-    const a =
-      typeof aId === 'number'
-        ? volumeMap.get(aId)
-        : undefined
+  const volumeGroups = [...grouped.entries()].sort(
+    ([aId], [bId]) => {
+      const a =
+        aId !== null ? volumeMap.get(aId) : undefined
+      const b =
+        bId !== null ? volumeMap.get(bId) : undefined
 
-    const b =
-      typeof bId === 'number'
-        ? volumeMap.get(bId)
-        : undefined
-
-    return (
-      (a?.volume_no ??
-        Number.MAX_SAFE_INTEGER) -
-      (b?.volume_no ??
-        Number.MAX_SAFE_INTEGER)
-    )
-  })
+      return (
+        (a?.volume_no ?? Number.MAX_SAFE_INTEGER) -
+        (b?.volume_no ?? Number.MAX_SAFE_INTEGER)
+      )
+    }
+  )
 
   return (
     <main className="archive-page">
-      <JsonLd
-        data={workJsonLd}
-      />
+      <JsonLd data={workJsonLd} />
 
       <nav
         aria-label="パンくず"
@@ -319,9 +224,7 @@ export default async function WorkPage({
           WORK
         </div>
 
-        <h1 className="archive-page-title">
-          {work.title}
-        </h1>
+        <h1 className="archive-page-title">{work.title}</h1>
 
         {work.title_kana && (
           <div
@@ -334,37 +237,6 @@ export default async function WorkPage({
             {work.title_kana}
           </div>
         )}
-
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '7px 20px',
-            marginTop: '18px',
-            color: '#6f685f',
-            fontSize: '0.88rem',
-          }}
-        >
-          {work.author && (
-            <span>著：{work.author}</span>
-          )}
-
-          {work.editor && (
-            <span>編：{work.editor}</span>
-          )}
-
-          {work.illustrator && (
-            <span>画：{work.illustrator}</span>
-          )}
-
-          {work.published_year && (
-            <span>{work.published_year}</span>
-          )}
-
-          {work.region && (
-            <span>地域：{work.region}</span>
-          )}
-        </div>
       </header>
 
       <div
@@ -377,88 +249,98 @@ export default async function WorkPage({
         公開中 {entries.length}件
       </div>
 
-      {volumeGroups.map(
-        ([volumeId, volumeEntries]) => {
-          const volume =
-            typeof volumeId === 'number'
-              ? volumeMap.get(volumeId)
-              : undefined
+      {volumeGroups.map(([volumeId, volumeEntries]) => {
+        const volume =
+          volumeId !== null
+            ? volumeMap.get(volumeId)
+            : undefined
 
-          return (
-            <section
-              key={volumeId ?? 'no-volume'}
+        return (
+          <section
+            key={volumeId ?? 'no-volume'}
+            style={{ marginBottom: '56px' }}
+          >
+            <div
               style={{
-                marginBottom: '56px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                marginBottom: '20px',
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  marginBottom: '20px',
-                }}
-              >
-                {volume ? (
-                  <Link
-                    href={`/works/${id}/volumes/${volume.id}`}
-                    style={{
-                      color: '#292722',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    <h2
-                      style={{
-                        margin: 0,
-                        fontSize: '1.35rem',
-                        letterSpacing: '0.06em',
-                      }}
-                    >
-                      {volume.volume_label ??
-                        `巻 ${volume.volume_no ?? volume.id}`}
-                    </h2>
-                  </Link>
-                ) : (
+              {volume ? (
+                <Link
+                  href={`/works/${id}/volumes/${volume.id}`}
+                  style={{
+                    color: '#292722',
+                    textDecoration: 'none',
+                  }}
+                >
                   <h2
                     style={{
                       margin: 0,
                       fontSize: '1.35rem',
                     }}
                   >
-                    巻未設定
+                    {volume.volume_label ??
+                      `巻 ${volume.volume_no ?? volume.id}`}
                   </h2>
-                )}
+                </Link>
+              ) : (
+                <h2>巻未設定</h2>
+              )}
 
-                <div
-                  style={{
-                    flex: 1,
-                    height: '1px',
-                    background: '#ddd7cc',
-                  }}
-                />
+              <div
+                style={{
+                  flex: 1,
+                  height: '1px',
+                  background: '#ddd7cc',
+                }}
+              />
+            </div>
 
-                <span
-                  style={{
-                    color: '#999188',
-                    fontSize: '0.8rem',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {volumeEntries.length}件
-                </span>
-              </div>
+            <div className="archive-card-grid">
+              {volumeEntries.map((entry) => {
+                const current = currentPlaces[entry.id]
+                const photo = current?.photos?.[0]
 
-              <div className="archive-card-grid">
-                {volumeEntries.map((entry) => {
-                  const currentPlace =
-                    currentPlaces[entry.id]
+                return (
+                  <Link
+                    key={entry.id}
+                    href={`/meisho/${entry.id}`}
+                    className="archive-card"
+                    style={{
+                      padding: 0,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {photo && (
+                      <div
+                        style={{
+                          aspectRatio: '16 / 9',
+                          overflow: 'hidden',
+                          background: '#eee9e0',
+                        }}
+                      >
+                        <img
+                          src={photo.url}
+                          alt={
+                            photo.alt ||
+                            photo.caption ||
+                            current?.currentName ||
+                            entry.heading
+                          }
+                          loading="lazy"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      </div>
+                    )}
 
-                  return (
-                    <Link
-                      key={entry.id}
-                      href={`/meisho/${entry.id}`}
-                      className="archive-card"
-                    >
+                    <div style={{ padding: '22px 23px' }}>
                       <div
                         style={{
                           marginBottom: '10px',
@@ -474,8 +356,6 @@ export default async function WorkPage({
                       <h3
                         style={{
                           margin: 0,
-                          fontFamily:
-                            '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
                           fontSize: '1.25rem',
                           lineHeight: 1.5,
                         }}
@@ -483,43 +363,26 @@ export default async function WorkPage({
                         {entry.heading}
                       </h3>
 
-                      {entry.reading && (
-                        <div
-                          style={{
-                            marginTop: '4px',
-                            color: '#918981',
-                            fontSize: '0.8rem',
-                          }}
-                        >
-                          {entry.reading}
-                        </div>
-                      )}
-
-                      {currentPlace?.currentName &&
-                        currentPlace.currentName !==
-                          entry.heading && (
+                      {current?.currentName &&
+                        current.currentName !== entry.heading && (
                           <div
                             style={{
                               marginTop: '15px',
-                              paddingTop: '12px',
-                              borderTop:
-                                '1px solid #eeeae2',
                               color: '#65716d',
                               fontSize: '0.85rem',
                             }}
                           >
-                            現在：
-                            {currentPlace.currentName}
+                            現在：{current.currentName}
                           </div>
                         )}
-                    </Link>
-                  )
-                })}
-              </div>
-            </section>
-          )
-        }
-      )}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )
+      })}
     </main>
   )
 }
