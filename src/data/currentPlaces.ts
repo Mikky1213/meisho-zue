@@ -3,6 +3,7 @@ import { meisho7292 } from './meisho/7292'
 import { meisho4499 } from './meisho/4499'
 import { meisho4500 } from './meisho/4500'
 import { meisho4501 } from './meisho/4501'
+import { meisho7293 } from './meisho/7293'
 
 export type CurrentDocument = {
   title: string
@@ -39,6 +40,7 @@ export type SourceEntryLink = {
   entryOrder: number
   heading: string
   reading?: string
+  rawText?: string
 }
 
 export type CurrentPlace = {
@@ -63,4 +65,5 @@ export const currentPlaces: Record<number, CurrentPlace> = {
   4499: meisho4499,
   4500: meisho4500,
   4501: meisho4501,
+  7293: meisho7293,
 }
