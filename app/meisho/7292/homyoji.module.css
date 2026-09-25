@@ -1,0 +1,21 @@
+.page :global(.meisho-article) {
+  font-size: 16px;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+.page :global(.historical-text-body) {
+  font-size: 1.02rem !important;
+}
+
+.page :global(#translation),
+.page :global(#current),
+.page :global(#comparison) {
+  font-size: 16px;
+}
+
+@media (max-width: 720px) {
+  .page :global(.historical-text-body) {
+    font-size: 0.98rem !important;
+  }
+}
