@@ -3,6 +3,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { supabase } from '../../../../../src/lib/supabase'
 import { currentPlaces } from '../../../../../src/data/currentPlaces'
+import {
+  getDbPublishedEntryIds,
+  mergePublishedEntries,
+  type PublishedEntry,
+} from '../../../../../src/lib/publishedEntries'
 import JsonLd from '../../../../../src/components/JsonLd'
 import { absoluteUrl } from '../../../../../src/lib/site'
 
@@ -24,35 +29,29 @@ export async function generateMetadata({
     !Number.isInteger(parsedWorkId) ||
     !Number.isInteger(parsedVolumeId)
   ) {
-    return {
-      title: '巻',
-    }
+    return { title: '巻' }
   }
 
-  const [
-    { data: work },
-    { data: volume },
-  ] = await Promise.all([
-    supabase
-      .from('works')
-      .select('id, title')
-      .eq('id', parsedWorkId)
-      .single(),
-    supabase
-      .from('volumes')
-      .select('id, work_id, volume_label, volume_no')
-      .eq('id', parsedVolumeId)
-      .single(),
-  ])
+  const [{ data: work }, { data: volume }] =
+    await Promise.all([
+      supabase
+        .from('works')
+        .select('id, title')
+        .eq('id', parsedWorkId)
+        .single(),
+      supabase
+        .from('volumes')
+        .select('id, work_id, volume_label, volume_no')
+        .eq('id', parsedVolumeId)
+        .single(),
+    ])
 
   if (
     !work ||
     !volume ||
     volume.work_id !== parsedWorkId
   ) {
-    return {
-      title: '巻',
-    }
+    return { title: '巻' }
   }
 
   const volumeTitle =
@@ -84,42 +83,32 @@ export default async function VolumePage({
     notFound()
   }
 
-  const entryIds = Object.keys(currentPlaces)
-    .map(Number)
-    .filter(Number.isInteger)
-
-  if (entryIds.length === 0) {
-    notFound()
-  }
-
-  const [
-    workResult,
-    volumeResult,
-  ] = await Promise.all([
-    supabase
-      .from('works')
-      .select(`
-        id,
-        title,
-        author,
-        illustrator,
-        published_year
-      `)
-      .eq('id', parsedWorkId)
-      .single(),
-    supabase
-      .from('volumes')
-      .select(`
-        id,
-        work_id,
-        volume_no,
-        volume_label,
-        book_no,
-        book_label
-      `)
-      .eq('id', parsedVolumeId)
-      .single(),
-  ])
+  const [workResult, volumeResult] =
+    await Promise.all([
+      supabase
+        .from('works')
+        .select(`
+          id,
+          title,
+          author,
+          illustrator,
+          published_year
+        `)
+        .eq('id', parsedWorkId)
+        .single(),
+      supabase
+        .from('volumes')
+        .select(`
+          id,
+          work_id,
+          volume_no,
+          volume_label,
+          book_no,
+          book_label
+        `)
+        .eq('id', parsedVolumeId)
+        .single(),
+    ])
 
   const work = workResult.data
   const volume = volumeResult.data
@@ -134,32 +123,47 @@ export default async function VolumePage({
     notFound()
   }
 
-  const {
-    data: entries,
-    error: entriesError,
-  } = await supabase
-    .from('entries')
-    .select(`
-      id,
-      work_id,
-      volume_id,
-      entry_order,
-      heading,
-      reading
-    `)
-    .eq('work_id', parsedWorkId)
-    .eq('volume_id', parsedVolumeId)
-    .in('id', entryIds)
-    .order('entry_order')
+  const dbIds = getDbPublishedEntryIds()
+  let dbEntries: PublishedEntry[] = []
 
-  if (entriesError || !entries) {
-    return (
-      <main className="archive-page">
-        <h1>名所取得エラー</h1>
-        <pre>{entriesError?.message}</pre>
-      </main>
-    )
+  if (dbIds.length > 0) {
+    const { data, error } = await supabase
+      .from('entries')
+      .select(`
+        id,
+        work_id,
+        volume_id,
+        entry_order,
+        heading,
+        reading
+      `)
+      .eq('work_id', parsedWorkId)
+      .eq('volume_id', parsedVolumeId)
+      .in('id', dbIds)
+
+    if (error) {
+      return (
+        <main className="archive-page">
+          <h1>名所取得エラー</h1>
+          <pre>{error.message}</pre>
+        </main>
+      )
+    }
+
+    dbEntries = (data ?? []) as PublishedEntry[]
   }
+
+  const entries = mergePublishedEntries(dbEntries)
+    .filter(
+      (entry) =>
+        entry.work_id === parsedWorkId &&
+        entry.volume_id === parsedVolumeId
+    )
+    .sort(
+      (a, b) =>
+        (a.entry_order ?? Number.MAX_SAFE_INTEGER) -
+        (b.entry_order ?? Number.MAX_SAFE_INTEGER)
+    )
 
   if (entries.length === 0) {
     notFound()
@@ -169,79 +173,19 @@ export default async function VolumePage({
     volume.volume_label ??
     `巻 ${volume.volume_no ?? volume.id}`
 
-  const volumeJsonLd = [
-    {
-      '@context':
-        'https://schema.org',
-      '@type':
-        'CollectionPage',
-      name:
-        `${work.title} ${volumeTitle}`,
-      url:
-        absoluteUrl(
-          `/works/${work.id}/volumes/${volume.id}`
-        ),
-      inLanguage: 'ja',
-      isPartOf: {
-        '@type':
-          'CreativeWork',
-        name:
-          work.title,
-      },
-    },
-    {
-      '@context':
-        'https://schema.org',
-      '@type':
-        'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type':
-            'ListItem',
-          position: 1,
-          name: 'ホーム',
-          item:
-            absoluteUrl('/'),
-        },
-        {
-          '@type':
-            'ListItem',
-          position: 2,
-          name: '作品一覧',
-          item:
-            absoluteUrl('/works'),
-        },
-        {
-          '@type':
-            'ListItem',
-          position: 3,
-          name:
-            work.title,
-          item:
-            absoluteUrl(
-              `/works/${work.id}`
-            ),
-        },
-        {
-          '@type':
-            'ListItem',
-          position: 4,
-          name:
-            volumeTitle,
-          item:
-            absoluteUrl(
-              `/works/${work.id}/volumes/${volume.id}`
-            ),
-        },
-      ],
-    },
-  ]
+  const volumeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${work.title} ${volumeTitle}`,
+    url: absoluteUrl(
+      `/works/${work.id}/volumes/${volume.id}`
+    ),
+    inLanguage: 'ja',
+  }
 
   return (
     <main className="archive-page">
-      <JsonLd
-        data={volumeJsonLd}
-      />
+      <JsonLd data={volumeJsonLd} />
 
       <nav
         aria-label="パンくず"
@@ -289,20 +233,6 @@ export default async function VolumePage({
         <h1 className="archive-page-title">
           {volumeTitle}
         </h1>
-
-        {(volume.book_label ||
-          volume.book_no != null) && (
-          <div
-            style={{
-              marginTop: '10px',
-              color: '#91897e',
-              fontSize: '0.85rem',
-            }}
-          >
-            {volume.book_label ??
-              `冊 ${volume.book_no}`}
-          </div>
-        )}
       </header>
 
       <div
@@ -317,11 +247,8 @@ export default async function VolumePage({
 
       <div className="archive-card-grid">
         {entries.map((entry) => {
-          const currentPlace =
-            currentPlaces[entry.id]
-
-          const photo =
-            currentPlace?.photos?.[0]
+          const current = currentPlaces[entry.id]
+          const photo = current?.photos?.[0]
 
           return (
             <Link
@@ -346,12 +273,11 @@ export default async function VolumePage({
                     alt={
                       photo.alt ||
                       photo.caption ||
-                      currentPlace?.currentName ||
+                      current?.currentName ||
                       entry.heading
                     }
                     loading="lazy"
                     style={{
-                      display: 'block',
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
@@ -360,11 +286,7 @@ export default async function VolumePage({
                 </div>
               )}
 
-              <div
-                style={{
-                  padding: '22px 23px',
-                }}
-              >
+              <div style={{ padding: '22px 23px' }}>
                 <div
                   style={{
                     marginBottom: '10px',
@@ -380,8 +302,6 @@ export default async function VolumePage({
                 <h2
                   style={{
                     margin: 0,
-                    fontFamily:
-                      '"Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif',
                     fontSize: '1.3rem',
                     lineHeight: 1.5,
                   }}
@@ -401,21 +321,18 @@ export default async function VolumePage({
                   </div>
                 )}
 
-                {currentPlace?.currentName &&
-                  currentPlace.currentName !==
-                    entry.heading && (
+                {current?.currentName &&
+                  current.currentName !== entry.heading && (
                     <div
                       style={{
                         marginTop: '15px',
                         paddingTop: '12px',
-                        borderTop:
-                          '1px solid #eeeae2',
+                        borderTop: '1px solid #eeeae2',
                         color: '#65716d',
                         fontSize: '0.85rem',
                       }}
                     >
-                      現在：
-                      {currentPlace.currentName}
+                      現在：{current.currentName}
                     </div>
                   )}
               </div>
