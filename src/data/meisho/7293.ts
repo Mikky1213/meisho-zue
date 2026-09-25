@@ -25,9 +25,13 @@ export const meisho7293: CurrentPlace = {
   photos: [
     {
       url: 'https://ik.imagekit.io/meisho/7293/caption.jpg',
+      caption: '清土鬼子母神堂全体',
+      alt: '清土鬼子母神堂全体',
     },
     {
       url: 'https://ik.imagekit.io/meisho/7293/G9pxfaabIAEe-Ap.jpg',
+      caption: '星の井（三角井戸）',
+      alt: '清土鬼子母神境内の星の井（三角井戸）',
     },
   ],
 
