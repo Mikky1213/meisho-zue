@@ -31,6 +31,18 @@ type AuthorRow = {
   name: string
 }
 
+const KOISHIKAWA_DESCRIPTION_PREFIX =
+  '水道橋より外、白山のあたりまでの惣名なり。'
+
+const KOISHIKAWA_RAW_LITERARY_TEXTS = new Set([
+  '小石川といふところにて、',
+  'わが方をおもひ深めて小石河いつを瀬にとかこひわたるらん',
+  '江戸にはべりける頃、小石川といふところにて',
+  '久方の月見る宿の涼しさも隣ありけり石川の水',
+  '一時雨礫やふりてこいしかは',
+  '涼風やなほながらへば小石河',
+])
+
 function normalizeType(value: string | null) {
   return (value ?? '')
     .trim()
@@ -67,27 +79,26 @@ function createHistoricalNode(
 }
 
 function renderKoishikawaLiteraryBlock(
-  root: HTMLElement,
-  items: HistoricalItem[],
-  elements: HTMLElement[]
+  root: HTMLElement
 ) {
-  const itemElementMap = new Map<number, HTMLElement>()
-  const count = Math.min(items.length, elements.length)
+  const children = Array.from(root.children) as HTMLElement[]
 
-  for (let index = 0; index < count; index += 1) {
-    const order = items[index].item_order
-    if (order !== null) {
-      itemElementMap.set(order, elements[index])
+  const descriptionElement =
+    children.find((element) =>
+      (element.textContent ?? '')
+        .trim()
+        .startsWith(KOISHIKAWA_DESCRIPTION_PREFIX)
+    ) ?? children[0] ?? null
+
+  for (const element of children) {
+    const text = (element.textContent ?? '').trim()
+
+    if (KOISHIKAWA_RAW_LITERARY_TEXTS.has(text)) {
+      element.remove()
     }
   }
 
-  const descriptionElement = itemElementMap.get(1)
   const insertionPoint = descriptionElement?.nextSibling ?? null
-
-  for (let order = 2; order <= 7; order += 1) {
-    itemElementMap.get(order)?.remove()
-  }
-
   const fragment = document.createDocumentFragment()
 
   fragment.append(
@@ -190,14 +201,10 @@ export default function HistoricalTextFormatter() {
       const items = data as HistoricalItem[]
       const elements = Array.from(root.children) as HTMLElement[]
 
-      // 小石川は原文側の構造が確定しているため、文学部分を
-      // クライアントの関連テーブル取得結果に依存させず、正しい順序で固定描画する。
+      // 小石川は原文側の文学構造が確定しているため、
+      // 元の文学行を文字列で確実に除去し、正しい順序で一度だけ描画する。
       if (entryId === 4502) {
-        renderKoishikawaLiteraryBlock(
-          root,
-          items,
-          elements
-        )
+        renderKoishikawaLiteraryBlock(root)
         return
       }
 
