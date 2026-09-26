@@ -38,4 +38,14 @@ export const historicalMedia: Record<
       page: '巻之四',
     },
   ],
+
+  7293: [
+    {
+      url: 'https://ik.imagekit.io/meisho/7293/clipboard_20260926_210757.png',
+      caption: '『江戸名所図会』雑司ヶ谷鬼子母神出現所',
+      alt: '『江戸名所図会』雑司ヶ谷鬼子母神出現所',
+      source: '『江戸名所図会』',
+      page: '巻之四',
+    },
+  ],
 }
