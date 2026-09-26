@@ -43,6 +43,24 @@ const KOISHIKAWA_RAW_LITERARY_TEXTS = new Set([
   '涼風やなほながらへば小石河',
 ])
 
+const KOISHIKAWA_POETRY_MEANINGS = `和歌・俳句の大意
+
+『回国雑記』・道興准后
+「わが方をおもひ深めて小石河いつを瀬にとかこひわたるらん」
+大意：こちらを思う気持ちをいっそう深めながら、小石川のどの瀬を恋い慕って渡っているのだろうか、という趣旨。「瀬」「渡る」など川にちなむ語に恋情を重ねている。
+
+『黄葉集』・烏丸光広
+「久方の月見る宿の涼しさも隣ありけり石川の水」
+大意：月を眺める宿の涼しさには、すぐ隣を流れる石川の水の涼気も添わっている、という趣旨。
+
+芭蕉
+「一時雨礫やふりてこいしかは」
+大意：ひとしきり時雨が降り、まるで礫まで降ってきたようだ――という景を詠み、「小石川」の地名に「小石」を掛けた句。
+
+宗因
+「涼風やなほながらへば小石河」
+大意：涼しい風よ、できることならこのまま長く吹き続いてくれ、小石川よ、という趣旨。`
+
 function normalizeType(value: string | null) {
   return (value ?? '')
     .trim()
@@ -155,6 +173,26 @@ function renderKoishikawaLiteraryBlock(
   root.insertBefore(fragment, insertionPoint)
 }
 
+function renderKoishikawaTranslationMeanings() {
+  const section = document.querySelector<HTMLElement>('#translation')
+
+  if (!section) {
+    return
+  }
+
+  const body = section.querySelector<HTMLElement>(
+    'article:last-of-type > div:last-child'
+  )
+
+  if (!body || body.dataset.koishikawaPoetryMeanings === 'true') {
+    return
+  }
+
+  const currentText = body.textContent?.trimEnd() ?? ''
+  body.textContent = `${currentText}\n\n${KOISHIKAWA_POETRY_MEANINGS}`
+  body.dataset.koishikawaPoetryMeanings = 'true'
+}
+
 export default function HistoricalTextFormatter() {
   const pathname = usePathname()
 
@@ -205,6 +243,7 @@ export default function HistoricalTextFormatter() {
       // 元の文学行を文字列で確実に除去し、正しい順序で一度だけ描画する。
       if (entryId === 4502) {
         renderKoishikawaLiteraryBlock(root)
+        renderKoishikawaTranslationMeanings()
         return
       }
 
