@@ -7,7 +7,15 @@ export const meisho4497: CurrentPlace = {
 
   description: '',
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Honno-ji%20(Toshima,%20Tokyo).JPG',
+      caption: '妙永山本納寺',
+      alt: '東京都豊島区雑司が谷の妙永山本納寺',
+      credit: 'Wikimedia Commons',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Honno-ji_(Toshima,_Tokyo).JPG',
+    },
+  ],
 
   documents: [
     {
