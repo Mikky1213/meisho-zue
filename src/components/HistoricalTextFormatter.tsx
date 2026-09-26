@@ -31,6 +31,30 @@ type AuthorRow = {
   name: string
 }
 
+type LiteraryMeta = {
+  sourceTitle: string
+  authorName: string
+}
+
+const KOISHIKAWA_LITERARY_FALLBACK: Record<number, LiteraryMeta> = {
+  3: {
+    sourceTitle: '回国雑記',
+    authorName: '道興准后',
+  },
+  5: {
+    sourceTitle: '黄葉集',
+    authorName: '烏丸光広',
+  },
+  6: {
+    sourceTitle: '黄葉集',
+    authorName: '芭蕉',
+  },
+  7: {
+    sourceTitle: '黄葉集',
+    authorName: '宗因',
+  },
+}
+
 function normalizeType(value: string | null) {
   return (value ?? '')
     .trim()
@@ -188,20 +212,18 @@ export default function HistoricalTextFormatter() {
         }
 
         const literary = literaryByPlaceItem.get(item.id)
+        const fallback =
+          entryId === 4502 && item.item_order !== null
+            ? KOISHIKAWA_LITERARY_FALLBACK[item.item_order]
+            : undefined
 
-        if (!literary) {
-          continue
-        }
+        const sourceTitle = literary?.source_id !== null && literary?.source_id !== undefined
+          ? sourceMap.get(literary.source_id)?.trim() ?? fallback?.sourceTitle ?? ''
+          : fallback?.sourceTitle ?? ''
 
-        const sourceTitle =
-          literary.source_id !== null
-            ? sourceMap.get(literary.source_id)?.trim() ?? ''
-            : ''
-
-        const authorName =
-          literary.author_id !== null
-            ? authorMap.get(literary.author_id)?.trim() ?? ''
-            : ''
+        const authorName = literary?.author_id !== null && literary?.author_id !== undefined
+          ? authorMap.get(literary.author_id)?.trim() ?? fallback?.authorName ?? ''
+          : fallback?.authorName ?? ''
 
         if (sourceTitle) {
           if (sourceTitle !== lastSourceTitle) {
@@ -223,7 +245,7 @@ export default function HistoricalTextFormatter() {
           }
 
           lastSourceTitle = sourceTitle
-        } else {
+        } else if (type !== 'kotobagaki') {
           lastSourceTitle = ''
         }
 
