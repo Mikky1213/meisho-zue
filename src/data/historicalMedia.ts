@@ -27,6 +27,20 @@ export const historicalMedia: Record<
       source: '『江戸名所図会』',
       page: '巻之四',
     },
+    {
+      url: 'https://ik.imagekit.io/meisho/4498/clipboard_20260926_210705.png',
+      caption: '『江戸名所図会』鬼子母神堂（1）',
+      alt: '『江戸名所図会』鬼子母神堂（1）',
+      source: '『江戸名所図会』',
+      page: '巻之四',
+    },
+    {
+      url: 'https://ik.imagekit.io/meisho/4498/clipboard_20260926_210724.png',
+      caption: '『江戸名所図会』鬼子母神堂（2）',
+      alt: '『江戸名所図会』鬼子母神堂（2）',
+      source: '『江戸名所図会』',
+      page: '巻之四',
+    },
   ],
 
   7292: [
