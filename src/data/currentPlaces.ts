@@ -1,3 +1,4 @@
+import { meisho4496 } from './meisho/4496'
 import { meisho4497 } from './meisho/4497'
 import { meisho4498 } from './meisho/4498'
 import { meisho7292 } from './meisho/7292'
@@ -61,6 +62,7 @@ export type CurrentPlace = {
 }
 
 export const currentPlaces: Record<number, CurrentPlace> = {
+  4496: meisho4496,
   4497: meisho4497,
   4498: meisho4498,
   7292: meisho7292,
