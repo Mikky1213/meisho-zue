@@ -31,39 +31,6 @@ type AuthorRow = {
   name: string
 }
 
-type LiteraryMeta = {
-  sourceTitle: string
-  authorName: string
-}
-
-const KOISHIKAWA_LITERARY_FALLBACK: Record<number, LiteraryMeta> = {
-  3: {
-    sourceTitle: '回国雑記',
-    authorName: '道興准后',
-  },
-  5: {
-    sourceTitle: '黄葉集',
-    authorName: '烏丸光広',
-  },
-  6: {
-    sourceTitle: '黄葉集',
-    authorName: '芭蕉',
-  },
-  7: {
-    sourceTitle: '黄葉集',
-    authorName: '宗因',
-  },
-}
-
-const LITERARY_TYPES = new Set([
-  'waka',
-  'haiku',
-  'kyoka',
-  'gyosei',
-  'jisei',
-  'renga',
-])
-
 function normalizeType(value: string | null) {
   return (value ?? '')
     .trim()
@@ -87,6 +54,94 @@ function formatSourceTitle(title: string) {
   }
 
   return `『${trimmed}』`
+}
+
+function createHistoricalNode(
+  className: string,
+  text: string
+) {
+  const element = document.createElement('div')
+  element.className = `historical-generated-meta ${className}`
+  element.textContent = text
+  return element
+}
+
+function renderKoishikawaLiteraryBlock(
+  root: HTMLElement,
+  items: HistoricalItem[],
+  elements: HTMLElement[]
+) {
+  const itemElementMap = new Map<number, HTMLElement>()
+  const count = Math.min(items.length, elements.length)
+
+  for (let index = 0; index < count; index += 1) {
+    const order = items[index].item_order
+    if (order !== null) {
+      itemElementMap.set(order, elements[index])
+    }
+  }
+
+  const descriptionElement = itemElementMap.get(1)
+  const insertionPoint = descriptionElement?.nextSibling ?? null
+
+  for (let order = 2; order <= 7; order += 1) {
+    itemElementMap.get(order)?.remove()
+  }
+
+  const fragment = document.createDocumentFragment()
+
+  fragment.append(
+    createHistoricalNode(
+      'historical-source-title',
+      '『回国雑記』'
+    ),
+    createHistoricalNode(
+      'historical-item-kotobagaki',
+      '小石川といふところにて、'
+    ),
+    createHistoricalNode(
+      'historical-item-waka',
+      'わが方をおもひ深めて小石河いつを瀬にとかこひわたるらん'
+    ),
+    createHistoricalNode(
+      'historical-literary-author',
+      '道興准后'
+    ),
+    createHistoricalNode(
+      'historical-source-title',
+      '『黄葉集』'
+    ),
+    createHistoricalNode(
+      'historical-item-kotobagaki',
+      '江戸にはべりける頃、小石川といふところにて'
+    ),
+    createHistoricalNode(
+      'historical-item-waka',
+      '久方の月見る宿の涼しさも隣ありけり石川の水'
+    ),
+    createHistoricalNode(
+      'historical-literary-author',
+      '烏丸光広'
+    ),
+    createHistoricalNode(
+      'historical-item-haiku',
+      '一時雨礫やふりてこいしかは'
+    ),
+    createHistoricalNode(
+      'historical-literary-author',
+      '芭蕉'
+    ),
+    createHistoricalNode(
+      'historical-item-haiku',
+      '涼風やなほながらへば小石河'
+    ),
+    createHistoricalNode(
+      'historical-literary-author',
+      '宗因'
+    )
+  )
+
+  root.insertBefore(fragment, insertionPoint)
 }
 
 export default function HistoricalTextFormatter() {
@@ -134,8 +189,19 @@ export default function HistoricalTextFormatter() {
 
       const items = data as HistoricalItem[]
       const elements = Array.from(root.children) as HTMLElement[]
-      const count = Math.min(elements.length, items.length)
 
+      // 小石川は原文側の構造が確定しているため、文学部分を
+      // クライアントの関連テーブル取得結果に依存させず、正しい順序で固定描画する。
+      if (entryId === 4502) {
+        renderKoishikawaLiteraryBlock(
+          root,
+          items,
+          elements
+        )
+        return
+      }
+
+      const count = Math.min(elements.length, items.length)
       const itemIds = items.map((item) => item.id)
 
       let literaryRows: LiteraryItem[] = []
@@ -220,81 +286,68 @@ export default function HistoricalTextFormatter() {
           element.dataset.itemType = type
         }
 
-        if (type === 'kotobagaki') {
-          continue
-        }
-
-        if (!LITERARY_TYPES.has(type)) {
-          lastSourceTitle = ''
-          continue
-        }
-
         const literary = literaryByPlaceItem.get(item.id)
-        const fallback =
-          entryId === 4502 && item.item_order !== null
-            ? KOISHIKAWA_LITERARY_FALLBACK[item.item_order]
-            : undefined
+
+        if (!literary) {
+          continue
+        }
 
         const sourceTitle =
-          literary?.source_id !== null && literary?.source_id !== undefined
-            ? sourceMap.get(literary.source_id)?.trim() ??
-              fallback?.sourceTitle ??
-              ''
-            : fallback?.sourceTitle ?? ''
+          literary.source_id !== null
+            ? sourceMap.get(literary.source_id)?.trim() ?? ''
+            : ''
 
         const authorName =
-          literary?.author_id !== null && literary?.author_id !== undefined
-            ? authorMap.get(literary.author_id)?.trim() ??
-              fallback?.authorName ??
-              ''
-            : fallback?.authorName ?? ''
+          literary.author_id !== null
+            ? authorMap.get(literary.author_id)?.trim() ?? ''
+            : ''
 
         if (sourceTitle) {
           if (sourceTitle !== lastSourceTitle) {
-            const sourceMetaKey = `source-${item.id}`
+            const sourceElement = createHistoricalNode(
+              'historical-source-title',
+              formatSourceTitle(sourceTitle)
+            )
+
+            let anchor: HTMLElement = element
 
             if (
-              !root.querySelector(
-                `[data-historical-meta-key="${sourceMetaKey}"]`
-              )
+              index > 0 &&
+              normalizeType(items[index - 1].item_type) === 'kotobagaki'
             ) {
-              const sourceElement = document.createElement('div')
-              sourceElement.className =
-                'historical-generated-meta historical-source-title'
-              sourceElement.dataset.historicalMetaKey = sourceMetaKey
-              sourceElement.textContent = formatSourceTitle(sourceTitle)
-
-              let anchor: HTMLElement = element
-
-              if (
-                index > 0 &&
-                normalizeType(items[index - 1].item_type) === 'kotobagaki'
-              ) {
-                anchor = elements[index - 1]
-              }
-
-              root.insertBefore(sourceElement, anchor)
+              anchor = elements[index - 1]
             }
+
+            root.insertBefore(sourceElement, anchor)
           }
 
           lastSourceTitle = sourceTitle
-        } else {
+        } else if (type !== 'kotobagaki') {
           lastSourceTitle = ''
         }
 
-        if (authorName) {
-          const authorMetaKey = `author-${item.id}`
+        if (
+          authorName &&
+          [
+            'waka',
+            'haiku',
+            'kyoka',
+            'gyosei',
+            'jisei',
+            'renga',
+          ].includes(type)
+        ) {
+          const nextElement = element.nextElementSibling
+          const alreadyRendered =
+            nextElement?.classList.contains(
+              'historical-literary-author'
+            ) && nextElement.textContent === authorName
 
-          if (
-            !root.querySelector(
-              `[data-historical-meta-key="${authorMetaKey}"]`
+          if (!alreadyRendered) {
+            const authorElement = createHistoricalNode(
+              'historical-literary-author',
+              authorName
             )
-          ) {
-            const authorElement = document.createElement('div')
-            authorElement.className =
-              'historical-generated-meta historical-literary-author'
-            authorElement.dataset.historicalMetaKey = authorMetaKey
-            authorElement.textContent = authorName
             element.insertAdjacentElement('afterend', authorElement)
           }
         }
@@ -369,7 +422,7 @@ export default function HistoricalTextFormatter() {
         }
 
         .historical-text-body > .historical-item-kotobagaki {
-          margin-left: 8ch !important;
+          margin-left: 10ch !important;
         }
 
         .historical-text-body > .historical-item-waka,
