@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import JsonLd from "../src/components/JsonLd";
+import HistoricalTextFormatter from "../src/components/HistoricalTextFormatter";
 import {
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -109,6 +110,8 @@ export default function RootLayout({
         <JsonLd
           data={websiteJsonLd}
         />
+
+        <HistoricalTextFormatter />
 
         <a
           href="#main-content"
