@@ -12,13 +12,48 @@ type HistoricalItem = {
   raw_text: string | null
 }
 
-const SOURCE_TITLE_PATTERN = /^『[^』]+』$/
+type LiteraryItem = {
+  place_item_id: number
+  item_type: string | null
+  source_id: number | null
+  author_id: number | null
+  preface_text: string | null
+  raw_text: string | null
+}
+
+type SourceRow = {
+  id: number
+  title: string
+}
+
+type AuthorRow = {
+  id: number
+  name: string
+}
 
 function normalizeType(value: string | null) {
   return (value ?? '')
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9_-]+/g, '-')
+}
+
+function formatSourceTitle(title: string) {
+  const trimmed = title.trim()
+
+  if (!trimmed) {
+    return ''
+  }
+
+  if (/^『[^』]+』$/.test(trimmed)) {
+    return trimmed
+  }
+
+  if (trimmed === '同' || trimmed === '同上') {
+    return trimmed
+  }
+
+  return `『${trimmed}』`
 }
 
 export default function HistoricalTextFormatter() {
@@ -60,9 +95,87 @@ export default function HistoricalTextFormatter() {
         return
       }
 
-      const elements = Array.from(root.children) as HTMLElement[]
+      root
+        .querySelectorAll('.historical-generated-meta')
+        .forEach((node) => node.remove())
+
       const items = data as HistoricalItem[]
+      const elements = Array.from(root.children) as HTMLElement[]
       const count = Math.min(elements.length, items.length)
+
+      const itemIds = items.map((item) => item.id)
+
+      let literaryRows: LiteraryItem[] = []
+      let sourceRows: SourceRow[] = []
+      let authorRows: AuthorRow[] = []
+
+      if (itemIds.length > 0) {
+        const { data: literaryData } = await supabase
+          .from('literary_items')
+          .select(`
+            place_item_id,
+            item_type,
+            source_id,
+            author_id,
+            preface_text,
+            raw_text
+          `)
+          .in('place_item_id', itemIds)
+
+        literaryRows = (literaryData ?? []) as LiteraryItem[]
+
+        const sourceIds = [
+          ...new Set(
+            literaryRows
+              .map((item) => item.source_id)
+              .filter((id): id is number => id !== null)
+          ),
+        ]
+
+        const authorIds = [
+          ...new Set(
+            literaryRows
+              .map((item) => item.author_id)
+              .filter((id): id is number => id !== null)
+          ),
+        ]
+
+        if (sourceIds.length > 0) {
+          const { data: sourcesData } = await supabase
+            .from('sources')
+            .select('id, title')
+            .in('id', sourceIds)
+
+          sourceRows = (sourcesData ?? []) as SourceRow[]
+        }
+
+        if (authorIds.length > 0) {
+          const { data: authorsData } = await supabase
+            .from('authors')
+            .select('id, name')
+            .in('id', authorIds)
+
+          authorRows = (authorsData ?? []) as AuthorRow[]
+        }
+      }
+
+      if (cancelled) {
+        return
+      }
+
+      const literaryByPlaceItem = new Map(
+        literaryRows.map((item) => [item.place_item_id, item])
+      )
+
+      const sourceMap = new Map(
+        sourceRows.map((item) => [item.id, item.title])
+      )
+
+      const authorMap = new Map(
+        authorRows.map((item) => [item.id, item.name])
+      )
+
+      let lastSourceTitle = ''
 
       for (let index = 0; index < count; index += 1) {
         const element = elements[index]
@@ -74,13 +187,52 @@ export default function HistoricalTextFormatter() {
           element.dataset.itemType = type
         }
 
-        const text = (item.raw_text || item.heading || '').trim()
+        const literary = literaryByPlaceItem.get(item.id)
 
-        if (
-          type === 'waka' &&
-          SOURCE_TITLE_PATTERN.test(text)
-        ) {
-          element.classList.add('historical-source-title')
+        if (!literary) {
+          continue
+        }
+
+        const sourceTitle =
+          literary.source_id !== null
+            ? sourceMap.get(literary.source_id)?.trim() ?? ''
+            : ''
+
+        const authorName =
+          literary.author_id !== null
+            ? authorMap.get(literary.author_id)?.trim() ?? ''
+            : ''
+
+        if (sourceTitle) {
+          if (sourceTitle !== lastSourceTitle) {
+            const sourceElement = document.createElement('div')
+            sourceElement.className =
+              'historical-generated-meta historical-source-title'
+            sourceElement.textContent = formatSourceTitle(sourceTitle)
+
+            let anchor: HTMLElement = element
+
+            if (
+              index > 0 &&
+              normalizeType(items[index - 1].item_type) === 'kotobagaki'
+            ) {
+              anchor = elements[index - 1]
+            }
+
+            root.insertBefore(sourceElement, anchor)
+          }
+
+          lastSourceTitle = sourceTitle
+        } else {
+          lastSourceTitle = ''
+        }
+
+        if (authorName) {
+          const authorElement = document.createElement('div')
+          authorElement.className =
+            'historical-generated-meta historical-literary-author'
+          authorElement.textContent = authorName
+          element.insertAdjacentElement('afterend', authorElement)
         }
       }
     }
@@ -102,6 +254,7 @@ export default function HistoricalTextFormatter() {
         padding: 0 !important;
         border-left: 0 !important;
         text-align: left !important;
+        white-space: pre-wrap;
       }
 
       .historical-text-body > .historical-item-kotobagaki {
@@ -111,7 +264,7 @@ export default function HistoricalTextFormatter() {
         text-align: left !important;
       }
 
-      .historical-text-body > .historical-item-waka:not(.historical-source-title),
+      .historical-text-body > .historical-item-waka,
       .historical-text-body > .historical-item-haiku,
       .historical-text-body > .historical-item-kyoka,
       .historical-text-body > .historical-item-gyosei,
@@ -122,25 +275,24 @@ export default function HistoricalTextFormatter() {
         text-align: left !important;
       }
 
-      .historical-text-body > .historical-item-author {
-        margin: 0 3ch 6px 0 !important;
+      .historical-text-body > .historical-literary-author {
+        margin: 0 3ch 6px 6ch !important;
         padding: 0 !important;
         border-left: 0 !important;
         text-align: right !important;
+        white-space: pre-wrap;
       }
 
       .historical-text-body > .historical-item-end {
         display: none !important;
       }
 
-      .historical-text-body > .historical-source-title > strong,
       .historical-text-body > .historical-item-kotobagaki > strong,
       .historical-text-body > .historical-item-waka > strong,
       .historical-text-body > .historical-item-haiku > strong,
       .historical-text-body > .historical-item-kyoka > strong,
       .historical-text-body > .historical-item-gyosei > strong,
-      .historical-text-body > .historical-item-jisei > strong,
-      .historical-text-body > .historical-item-author > strong {
+      .historical-text-body > .historical-item-jisei > strong {
         display: inline;
         font-weight: inherit;
       }
@@ -154,12 +306,17 @@ export default function HistoricalTextFormatter() {
           margin-left: 8ch !important;
         }
 
-        .historical-text-body > .historical-item-waka:not(.historical-source-title),
+        .historical-text-body > .historical-item-waka,
         .historical-text-body > .historical-item-haiku,
         .historical-text-body > .historical-item-kyoka,
         .historical-text-body > .historical-item-gyosei,
         .historical-text-body > .historical-item-jisei {
           margin-left: 6ch !important;
+        }
+
+        .historical-text-body > .historical-literary-author {
+          margin-left: 6ch !important;
+          margin-right: 1ch !important;
         }
       }
     `}</style>
