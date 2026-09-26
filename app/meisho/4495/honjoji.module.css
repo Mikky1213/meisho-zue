@@ -1,0 +1,49 @@
+.page :global(.meisho-article) {
+  font-size: 16px;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+.page :global(.historical-text-body) {
+  font-size: 1.02rem !important;
+}
+
+.page :global(#translation),
+.page :global(#current),
+.page :global(#comparison) {
+  font-size: 16px;
+}
+
+.page :global(.historical-text-subheading) {
+  margin-top: 26px !important;
+  margin-bottom: 10px !important;
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+  font-size: 1.02rem !important;
+  line-height: 2.05 !important;
+}
+
+.page :global(.historical-text-block) > strong,
+.page :global(.historical-text-depth2) > strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1em;
+  line-height: 2.05;
+}
+
+.page :global(.historical-text-block) > span,
+.page :global(.historical-text-depth2) > span {
+  display: block;
+}
+
+.page :global(.historical-text-depth2) {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  border-left: 0 !important;
+}
+
+@media (max-width: 720px) {
+  .page :global(.historical-text-body) {
+    font-size: 0.98rem !important;
+  }
+}
