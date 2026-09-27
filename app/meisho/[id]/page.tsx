@@ -1137,6 +1137,19 @@ export default async function MeishoPage({
                         )
                       : item.raw_text
 
+                  const formattedBody =
+                    entryId === 4503
+                      ? body
+                          .replace(
+                            /[ \u3000]*開山伝に曰く、/g,
+                            '\n\n開山伝に曰く、'
+                          )
+                          .replace(
+                            /（以上、了誉上人伝の要を摘む）。[ \u3000]*/g,
+                            '（以上、了誉上人伝の要を摘む）。\n\n'
+                          )
+                      : body
+
                   return (
                     <div
                       key={item.id}
@@ -1158,7 +1171,7 @@ export default async function MeishoPage({
                             'pre-wrap',
                         }}
                       >
-                        {body}
+                        {formattedBody}
                       </span>
                     </div>
                   )
