@@ -8,12 +8,14 @@ import { meisho4500 } from './meisho/4500'
 import { meisho4501 } from './meisho/4501'
 import { meisho4502 } from './meisho/4502'
 import { meisho4503 } from './meisho/4503Registered'
-import { meisho4504 } from './meisho/4504'
-import { meisho4506 } from './meisho/4506'
-import { meisho4507 } from './meisho/4507'
-import { meisho4508 } from './meisho/4508'
-import { meisho4509 } from './meisho/4509'
-import { meisho4510 } from './meisho/4510'
+import {
+  meisho4504,
+  meisho4506,
+  meisho4507,
+  meisho4508,
+  meisho4509,
+  meisho4510,
+} from './meisho/4504to4510Translated'
 import { meisho7293 } from './meisho/7293'
 import { meisho7294 } from './meisho/7294'
 
