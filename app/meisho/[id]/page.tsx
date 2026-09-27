@@ -1095,6 +1095,77 @@ export default async function MeishoPage({
               }
 
               if (
+                item.item_type === 'subitem' &&
+                item.heading
+              ) {
+                const heading =
+                  item.heading.trim()
+
+                const fullWidthParenIndex =
+                  heading.indexOf('（')
+
+                const halfWidthParenIndex =
+                  heading.indexOf('(')
+
+                const parenIndexes = [
+                  fullWidthParenIndex,
+                  halfWidthParenIndex,
+                ].filter(
+                  (index) => index >= 0
+                )
+
+                const parenIndex =
+                  parenIndexes.length > 0
+                    ? Math.min(
+                        ...parenIndexes
+                      )
+                    : -1
+
+                if (parenIndex > 0) {
+                  const title =
+                    heading
+                      .slice(0, parenIndex)
+                      .trim()
+
+                  const rawText =
+                    item.raw_text.trimStart()
+
+                  const body =
+                    rawText.startsWith(title)
+                      ? rawText.slice(
+                          title.length
+                        )
+                      : item.raw_text
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="historical-text-block"
+                      style={{
+                        marginTop:
+                          '26px',
+                        marginBottom:
+                          '26px',
+                      }}
+                    >
+                      <strong>
+                        {title}
+                      </strong>
+
+                      <span
+                        style={{
+                          whiteSpace:
+                            'pre-wrap',
+                        }}
+                      >
+                        {body}
+                      </span>
+                    </div>
+                  )
+                }
+              }
+
+              if (
                 item.depth === 1 &&
                 item.heading &&
                 item.raw_text.trim() ===
