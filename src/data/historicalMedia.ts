@@ -15,6 +15,9 @@ export type HistoricalImage = {
 const kishimojinHomyojiImageUrl =
   'https://ik.imagekit.io/meisho/4498/digidepo_959918_0103.jpg'
 
+const denzuinSourceUrl =
+  'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa.html'
+
 export const historicalMedia: Record<
   number,
   HistoricalImage[]
@@ -40,6 +43,36 @@ export const historicalMedia: Record<
       alt: '『江戸名所図会』鬼子母神堂（2）',
       source: '『江戸名所図会』',
       page: '巻之四',
+    },
+  ],
+
+  4503: [
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/101dentsuin_uramon.jpg',
+      caption: '『江戸名所図会』傳通院裏門',
+      alt: '『江戸名所図会』に描かれた傳通院裏門',
+      source: '『江戸名所図会』',
+      sourceUrl: denzuinSourceUrl,
+      page: '巻之四 天権之部',
+      note: '傳通院全景を構成する連続挿図の一部。',
+    },
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/102takuzosu.jpg',
+      caption: '『江戸名所図会』其二 澤蔵主稲荷社',
+      alt: '『江戸名所図会』に描かれた澤蔵主稲荷社',
+      source: '『江戸名所図会』',
+      sourceUrl: denzuinSourceUrl,
+      page: '巻之四 天権之部',
+      note: '「傳通院裏門」に続く連続挿図。',
+    },
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/103dentsuin_somon.jpg',
+      caption: '『江戸名所図会』其三 傳通院総門・大黒天・念佛堂',
+      alt: '『江戸名所図会』に描かれた傳通院総門・大黒天・念佛堂',
+      source: '『江戸名所図会』',
+      sourceUrl: denzuinSourceUrl,
+      page: '巻之四 天権之部',
+      note: '「澤蔵主稲荷社」に続く連続挿図。',
     },
   ],
 
