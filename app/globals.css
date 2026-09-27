@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 原文表示：見出しは独立行、本文は次行に表示する */
+.historical-text-block > strong:first-child {
+  display: block;
+}
+
+.historical-text-block > strong:first-child + span {
+  display: block;
+}
