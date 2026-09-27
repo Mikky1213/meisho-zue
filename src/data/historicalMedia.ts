@@ -112,6 +112,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4508: [
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_komagome/4-107hakusanjinja.jpg',
+      caption: '『江戸名所図会』小石川白山権現社',
+      alt: '『江戸名所図会』に描かれた小石川白山権現社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_komagome.html',
+      page: '巻之四 天権之部',
+      note: '現在の白山神社にあたる白山権現社の境内を描いた挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
