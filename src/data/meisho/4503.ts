@@ -10,12 +10,20 @@ export const meisho4503: CurrentPlace = {
 
   photos: [
     {
-      url: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Denz%C5%AB-in%20or%20Denzuin%20Temple%20Bunkyo%20City%20Tokyo%20Japan%2011.jpg',
-      caption: '現在の傳通院',
-      alt: '東京都文京区小石川の無量山寿経寺傳通院',
-      takenAt: '2023-08-14',
-      credit: 'ウィキ太郎 / Wikimedia Commons（CC0）',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Denz%C5%AB-in_or_Denzuin_Temple_Bunkyo_City_Tokyo_Japan_11.jpg',
+      url: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Denz%C5%AB-in%2C%20Bunky%C5%8D%2C%20Tokyo%20-%20Apr%208%2C%202017.jpg',
+      caption: '傳通院本堂',
+      alt: '東京都文京区小石川の傳通院本堂',
+      takenAt: '2017-04-08',
+      credit: 'Wikimedia Commons',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Denz%C5%AB-in,_Bunky%C5%8D,_Tokyo_-_Apr_8,_2017.jpg',
+    },
+  ],
+
+  documents: [
+    {
+      title: '『新編武蔵風土記稿』小石川村（伝通院領）',
+      text: `元和九年伝通院殿御仏供料トナリ、残ル地ハ正保四年木村善右衛門ニ賜ハリ今ニ然リ。検地ハ正保四年伊奈半十郎糺セリ。`,
+      source: '『新編武蔵風土記稿』',
     },
   ],
 
@@ -113,6 +121,11 @@ export const meisho4503: CurrentPlace = {
       text: '『江戸名所図会』は、開山・聖冏（了誉）が応永22年（1415）に小石川で一宇を営んだことを伝通院の始まりとしている。現在の文京区の案内は、徳川家康が慶長8年（1603）に於大の方をこの地に葬り、のち堂宇を建立して傳通院となった経緯を前面に出している。中世以来の寺院史と、徳川家菩提寺として整備された近世史という二つの段階が見える。',
       source: '『江戸名所図会』・文京区',
       url: 'https://www.city.bunkyo.lg.jp/b014/p003801.html',
+    },
+    {
+      title: '『新編武蔵風土記稿』での扱い',
+      text: '確認できた範囲では、伝通院そのものを立項した独立の寺院記事は見当たらない。一方、「小石川村」には元和9年に村地が「伝通院殿御仏供料」となったことが記されており、伝通院領としての関係は確認できる。',
+      source: '『新編武蔵風土記稿』小石川村',
     },
   ],
 }
