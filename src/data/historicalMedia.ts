@@ -100,6 +100,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4507: [
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/106shounji_muryoin.jpg',
+      caption: '『江戸名所図会』祥雲寺・無量院',
+      alt: '『江戸名所図会』に描かれた瑞鳳山祥雲寺と薬王山無量院',
+      source: '『江戸名所図会』',
+      sourceUrl: denzuinSourceUrl,
+      page: '巻之四 天権之部',
+      note: '祥雲寺と無量院を一続きの景観として描いた見開き挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
