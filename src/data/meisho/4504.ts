@@ -9,7 +9,22 @@ export const meisho4504: CurrentPlace = {
   description:
     '現在も小石川にある浄土宗寺院。中台山医王院光圓寺と号し、行基開山の伝承を持つ。応永年間に聖冏（了誉上人）が中興して浄土宗に改めたと伝えられ、境内には行基ゆかりとされる大銀杏の後継樹が残る。',
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://kouenji.site/wp-content/uploads/2021/04/springtile.jpg',
+      caption: '現在の光圓寺境内',
+      alt: '東京都文京区小石川の光圓寺境内',
+      credit: '光圓寺公式サイト',
+      sourceUrl: 'https://kouenji.site/',
+    },
+    {
+      url: 'https://kouenji.site/wp-content/uploads/2020/04/IMG_7798.jpg',
+      caption: '行基菩薩お手植えと伝わる銀杏',
+      alt: '光圓寺境内の行基菩薩お手植えと伝わる銀杏',
+      credit: '光圓寺公式サイト',
+      sourceUrl: 'https://kouenji.site/',
+    },
+  ],
 
   documents: tokyoMeishoZue4504,
 
