@@ -88,6 +88,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4506: [
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/105sokeiji.jpg',
+      caption: '『江戸名所図会』宗慶寺・極楽水',
+      alt: '『江戸名所図会』に描かれた吉水山宗慶寺と極楽水',
+      source: '『江戸名所図会』',
+      sourceUrl: denzuinSourceUrl,
+      page: '巻之四 天権之部',
+      note: '宗慶寺境内と極楽水を描いた挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
