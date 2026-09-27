@@ -76,6 +76,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4504: [
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/104koenji.jpg',
+      caption: '『江戸名所図会』光圓寺',
+      alt: '『江戸名所図会』に描かれた中臺山光圓寺',
+      source: '『江戸名所図会』',
+      sourceUrl: denzuinSourceUrl,
+      page: '巻之四 天権之部',
+      note: '光圓寺の境内と大銀杏を描いた挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
