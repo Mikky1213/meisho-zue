@@ -1,5 +1,6 @@
 import type { CurrentPlace } from '../currentPlaces'
 import { tokyoMeishoZue4508 } from './4508TokyoMeishoZue'
+import { hakusanFestival4508 } from './4508Festival'
 
 export const meisho4508: CurrentPlace = {
   currentName: '白山神社',
@@ -26,7 +27,12 @@ export const meisho4508: CurrentPlace = {
     },
   ],
 
-  documents: tokyoMeishoZue4508,
+  documents: [
+    ...tokyoMeishoZue4508.filter(
+      (document) => document.title !== '『東京名所図会』享和二年の祭禮'
+    ),
+    hakusanFestival4508,
+  ],
 
   comparison: [
     {
