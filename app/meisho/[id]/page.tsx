@@ -453,6 +453,20 @@ export default async function MeishoPage({
     )
   }
 
+  const formatOriginalText = (text: string) => {
+    if (entryId !== 4511) {
+      return text
+    }
+
+    return text
+      .replace(/\r\n/g, '\n')
+      .split(/\n{2,}/)
+      .map((paragraph) =>
+        paragraph.replace(/\n/g, '')
+      )
+      .join('\n\n')
+  }
+
   // ------------------------------
   // 同じ地域の名所
   // ------------------------------
@@ -1088,7 +1102,7 @@ export default async function MeishoPage({
                     )}
 
                     <div>
-                      {item.raw_text}
+                      {formatOriginalText(item.raw_text)}
                     </div>
                   </div>
                 )
@@ -1148,7 +1162,7 @@ export default async function MeishoPage({
                             /（以上、了誉上人伝の要を摘む）。[ \u3000]*/g,
                             '（以上、了誉上人伝の要を摘む）。\n\n'
                           )
-                      : body
+                      : formatOriginalText(body)
 
                   return (
                     <div
@@ -1258,7 +1272,7 @@ export default async function MeishoPage({
                           'pre-wrap',
                       }}
                     >
-                      {body}
+                      {formatOriginalText(body)}
                     </span>
                   </div>
                 )
@@ -1301,7 +1315,7 @@ export default async function MeishoPage({
                         'pre-wrap',
                     }}
                   >
-                    {body}
+                    {formatOriginalText(body)}
                   </span>
                 </div>
               )
