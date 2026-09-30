@@ -124,6 +124,17 @@ export const historicalMedia: Record<
     },
   ],
 
+  4511: [
+    {
+      url: 'https://ik.imagekit.io/meisho/4511/clipboard_20260930_211427.png',
+      caption: '『江戸名所図会』氷川明神社',
+      alt: '『江戸名所図会』に描かれた小石川氷川明神社',
+      source: '『江戸名所図会』',
+      page: '巻之四 天権之部',
+      note: '現在の簸川神社にあたる氷川明神社の挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
