@@ -147,6 +147,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4513: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563392/R0000017/full/full/0/default.jpg',
+      caption: '『江戸名所図会』十羅刹女堂',
+      alt: '『江戸名所図会』に描かれた十羅刹女堂',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563392/1/17',
+      page: '巻之四 天権之部・第十三冊 121ウ122オ',
+      note: '中央左に本堂、その右に別当福蔵院、右上遠景に乞食橋を描く。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
