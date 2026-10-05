@@ -1,7 +1,7 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4532: CurrentPlace = {
-  currentName: "亀頂山三宝寺",
+  currentName: "愛宕権現宮",
 
   address: '',
 
