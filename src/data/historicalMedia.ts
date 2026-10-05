@@ -171,7 +171,7 @@ export const historicalMedia: Record<
     },
   ],
 
-  4516: [
+  4517: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300398436.jpg',
       caption: '『江戸名所図会』乗蓮寺・相生杉・女男松・板橋駅',
