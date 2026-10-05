@@ -171,6 +171,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4516: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300398436.jpg',
+      caption: '『江戸名所図会』乗蓮寺・相生杉・女男松・板橋駅',
+      alt: '『江戸名所図会』に描かれた板橋宿仲宿の乗蓮寺',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5465',
+      page: '巻之四 天権之部・第十三冊 124ウ125オ',
+      note: '板橋宿仲宿にあった乗蓮寺と境内の女男松、街道を往来する人々を描く。相生杉は本堂裏手にあったとされる。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
