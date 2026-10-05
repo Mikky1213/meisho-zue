@@ -159,6 +159,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4514: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300398402.jpg',
+      caption: '『江戸名所図会』板橋駅',
+      alt: '『江戸名所図会』に描かれた板橋駅と石神井川の板橋',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5462',
+      page: '巻之四 天権之部・第十三冊',
+      note: '石神井川に架かる板橋と、板橋宿を往来する旅人・馬を描く見開き挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
