@@ -135,6 +135,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4512: [
+    {
+      url: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa/109nekomatabashi.jpg',
+      caption: '『江戸名所図会』猫貍橋',
+      alt: '『江戸名所図会』に描かれた猫貍橋',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://ma-maison.sakura.ne.jp/hill/meishozue/zue_koishikawa.html',
+      page: '巻之四 天権之部',
+      note: '小石川の流れに架かる猫貍橋を描いた挿図。',
+    },
+  ],
+
   7292: [
     {
       url: kishimojinHomyojiImageUrl,
