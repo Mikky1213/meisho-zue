@@ -1,11 +1,71 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4514: CurrentPlace = {
-  currentName: "板橋の駅",
+  currentName: '板橋宿跡（旧中山道）',
 
-  address: '',
+  address: '東京都板橋区板橋3丁目・仲宿・本町一帯',
 
-  description: '',
+  description:
+    '『江戸名所図会』の「板橋駅」は、中山道で日本橋を出て最初の宿場であった板橋宿を記した項目。板橋宿は平尾宿・仲宿・上宿からなり、旧中山道沿いに約1.7kmの宿並みが続いた。現在も旧中山道の道筋が残り、仲宿と上宿の境を流れる石神井川には、地名の由来ともされる「板橋」が架かっている。',
 
-  photos: [],
+  translation: [
+    {
+      title: '現代語訳',
+      text: `板橋駅は中山道の最初の宿場で、日本橋から二里のところにある。往来する旅人は、いつも絶えることがない。
+
+これは、東海道には大きな川が多く、大雨の後などには水かさが増して川留めとなり、道が通れなくなることがあるため、諸大名の参勤交代をはじめ、東西を往来する旅人の多くが中山道を利用したからであろう。
+
+宿場の中ほどには石神井川が流れている。この川に架かる橋を「板橋」といい、この橋の名がそのまま土地の名になったという。`,
+    },
+    {
+      title: '挿図の漢詩',
+      text: `夜明けに板橋の宿を出発する。
+はるか遠く、北へ向かう道が続いている。
+山はまばらで、朝日は早くから見え、
+草は短く、踏む霜は一面に繁く降りている。
+旅装を整えて東国の道へ進み、
+長い宿場を抜けて広い野原へ向かう。
+家を離れてから、まだそれほど時は経っていないのに、
+旅人の心はたやすく物悲しさに沈む。
+
+　　　　　　　　　　　　　　　　服部南郭`,
+    },
+  ],
+
+  photos: [
+    {
+      url: 'https://www.chiikishigen.metro.tokyo.lg.jp/_common/img/introduction/industry_img92.jpg',
+      caption: '現在の「板橋」',
+      alt: '旧中山道が石神井川を渡る現在の板橋',
+      credit: '東京都 地域資源（TOKYOイチオシナビ）',
+      sourceUrl: 'https://www.chiikishigen.metro.tokyo.lg.jp/introduction/tourism_resources02.html',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '中山道最初の宿場',
+      text: '『江戸名所図会』が「中仙道の首」と記す板橋宿は、日本橋を出て最初の宿場だった。現在も旧中山道の道筋が残り、板橋区によれば宿並みは約1,700メートル、北から上宿・仲宿・平尾宿の三つに分かれていた。',
+      source: '『江戸名所図会』・板橋区',
+      url: 'https://www.city.itabashi.tokyo.jp/bunka/bunkazi/card/1004920.html',
+    },
+    {
+      title: '宿場町から現在の商店街へ',
+      text: '江戸時代には旅人や大名行列が絶えず行き交った宿場町だった。現在、旧中山道沿いには仲宿商店街などが続き、道路の線形に宿場町の骨格をたどることができる。',
+      source: '『江戸名所図会』・板橋区',
+      url: 'https://www.city.itabashi.tokyo.jp/bunka/kanko/map/1033841.html',
+    },
+    {
+      title: '地名の由来となった「板橋」',
+      text: '『江戸名所図会』は、宿の中ほどを流れる石神井川に架かる橋を「板橋」といい、これが地名になったと記す。現在も旧中山道が石神井川を渡る同じ位置に「板橋」があり、板橋十景の一つに選ばれている。',
+      source: '『江戸名所図会』・板橋区',
+      url: 'https://www.city.itabashi.tokyo.jp/bunka/kanko/jyukei/1006821.html',
+    },
+    {
+      title: '木橋から現在の橋へ',
+      text: '『江戸名所図会』の挿図では、石神井川に緩やかな反りを持つ木橋が架かり、橋上を旅人や馬が行き交う。現在の橋は構造こそ異なるが、旧中山道と石神井川が交差する歴史的な位置を受け継いでいる。',
+      source: '『江戸名所図会』・東京都立図書館・板橋区',
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5462',
+    },
+  ],
 }
