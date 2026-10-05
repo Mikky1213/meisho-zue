@@ -20,6 +20,8 @@ import {
 import { meisho4511 } from './meisho/4511'
 import { meisho4512 } from './meisho/4512'
 import { meisho4513 } from './meisho/4513'
+import { meisho4514 } from './meisho/4514'
+import { meisho4515 } from './meisho/4515'
 import { meisho7293 } from './meisho/7293'
 import { meisho7294 } from './meisho/7294'
 
@@ -98,6 +100,8 @@ export const currentPlaces: Record<number, CurrentPlace> = {
   4511: meisho4511,
   4512: meisho4512,
   4513: meisho4513,
+  4514: meisho4514,
+  4515: meisho4515,
   7293: meisho7293,
   7294: meisho7294,
 }
