@@ -235,6 +235,30 @@ export const historicalMedia: Record<
     },
   ],
 
+  4416: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/354.jpg',
+      caption: '『江戸名所図会』井頭池 弁才天社',
+      alt: '『江戸名所図会』に描かれた井の頭池と弁財天社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5694',
+      page: '巻之四 天権之部・第十一冊',
+      note: '井の頭池と池畔の弁財天社、周囲の武蔵野の景観を描いた挿図。',
+    },
+  ],
+
+  4417: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/354.jpg',
+      caption: '『江戸名所図会』井頭池 弁才天社',
+      alt: '『江戸名所図会』に描かれた井の頭池と弁財天社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5694',
+      page: '巻之四 天権之部・第十一冊',
+      note: '井の頭池全体と弁財天社を一続きに描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
