@@ -86,6 +86,17 @@ export const regions: RegionDefinition[] = [
     ],
   },
   {
+    slug: 'koganei',
+    title: '小金井・玉川上水周辺',
+    reading: 'こがねい・たまがわじょうすいしゅうへん',
+    subtitle: '小金井橋と玉川上水の桜',
+    description:
+      '『江戸名所図会』巻之四に描かれた小金井橋と玉川上水沿いの名所をまとめます。',
+    entryIds: [
+      4420,
+    ],
+  },
+  {
     slug: 'koishikawa',
     title: '小石川周辺',
     reading: 'こいしかわしゅうへん',
