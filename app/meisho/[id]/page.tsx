@@ -997,6 +997,29 @@ export default async function MeishoPage({
           ／
         </span>
 
+        {currentPlace?.relatedSourceComparison &&
+          currentPlace.relatedSourceComparison.length > 0 && (
+            <>
+              <span
+                aria-hidden="true"
+                style={{ color: '#b2aaa0' }}
+              >
+                ／
+              </span>
+
+              <a
+                href="#related-source-comparison"
+                style={{
+                  color: '#575149',
+                  textDecoration: 'none',
+                  fontSize: '0.88rem',
+                }}
+              >
+                文献と図会を比較
+              </a>
+            </>
+          )}
+
         <a
           href="#comparison"
           style={{
@@ -1771,6 +1794,39 @@ export default async function MeishoPage({
                   </div>
                 </div>
               )}
+
+            {currentPlace.relatedSourcesPending &&
+              (!currentPlace.documents ||
+                currentPlace.documents.length === 0) && (
+                <div
+                  style={{
+                    marginTop: '32px',
+                    paddingTop: '28px',
+                    borderTop: '1px solid #cbd8d4',
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: '0 0 12px',
+                      fontSize: '1.15rem',
+                    }}
+                  >
+                    関連文献・資料
+                  </h3>
+
+                  <div
+                    style={{
+                      padding: '16px 18px',
+                      border: '1px dashed #c9bfae',
+                      borderRadius: '8px',
+                      background: '#fbf8f1',
+                      color: '#766d61',
+                    }}
+                  >
+                    関連文献は未追加です。後から追加する対象として登録されています。
+                  </div>
+                </div>
+              )}
           </div>
         ) : (
           <div
@@ -1786,6 +1842,123 @@ export default async function MeishoPage({
           </div>
         )}
       </section>
+
+      {currentPlace?.relatedSourceComparison &&
+        currentPlace.relatedSourceComparison.length > 0 && (
+          <section
+            id="related-source-comparison"
+            style={{
+              marginTop: '64px',
+              paddingTop: '40px',
+              borderTop: '1px solid #d8d2c7',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                marginBottom: '28px',
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: '1.5rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                関連文献と『江戸名所図会』の比較
+              </h2>
+
+              <div
+                style={{
+                  flex: 1,
+                  height: '1px',
+                  background: '#d8d2c7',
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                padding: '32px',
+                border: '1px solid #d8d2c7',
+                borderRadius: '10px',
+                background: '#f7f4ee',
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gap: '20px',
+                }}
+              >
+                {currentPlace.relatedSourceComparison.map(
+                  (comparison, index) => (
+                    <article
+                      key={`related-${comparison.title}-${index}`}
+                      style={{
+                        padding: '22px 24px',
+                        border: '1px solid #ded8ce',
+                        borderRadius: '8px',
+                        background: '#fffdf8',
+                      }}
+                    >
+                      <h3
+                        style={{
+                          margin: '0 0 12px',
+                          fontSize: '1.1rem',
+                        }}
+                      >
+                        {comparison.title}
+                      </h3>
+
+                      <div
+                        style={{
+                          whiteSpace: 'pre-wrap',
+                        }}
+                      >
+                        {comparison.text}
+                      </div>
+
+                      {comparison.source && (
+                        <div
+                          style={{
+                            marginTop: '14px',
+                            paddingTop: '10px',
+                            borderTop: '1px solid #ece7dd',
+                            color: '#777',
+                            fontSize: '0.85rem',
+                          }}
+                        >
+                          出典：{comparison.source}
+                        </div>
+                      )}
+
+                      {comparison.url && (
+                        <div
+                          style={{
+                            marginTop: '10px',
+                          }}
+                        >
+                          <a
+                            href={comparison.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            資料を見る
+                          </a>
+                        </div>
+                      )}
+                    </article>
+                  )
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
       {/* 画像で比較 */}
       {historicalImages.length > 0 &&
