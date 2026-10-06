@@ -163,6 +163,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4405: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418109.jpg',
+      caption: '『江戸名所図会』中野塔',
+      alt: '『江戸名所図会』に描かれた中野の景観と中野塔',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5561',
+      page: '巻之四 天権之部',
+      note: '「中野」本文の直後に続く「中野の七塔」に関わる挿図。独立した「中野」挿図ではないが、同地域の当時の景観を伝えるため掲載する。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
