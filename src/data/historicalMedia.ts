@@ -127,6 +127,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4402: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300416097.jpg',
+      caption: '『江戸名所図会』淀橋水車',
+      alt: '『江戸名所図会』に描かれた淀橋と水車',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5517',
+      page: '巻之四 天権之部',
+      note: '淀橋と、その近くで稼働していた水車を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
