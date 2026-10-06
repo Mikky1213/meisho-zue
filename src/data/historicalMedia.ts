@@ -280,6 +280,42 @@ export const historicalMedia: Record<
     },
   ],
 
+  4421: [
+    {
+      url: 'https://www.tsukudo.jp/goyuisyo.jpg',
+      caption: '『江戸名所図会』築土八幡宮・同明神社',
+      alt: '『江戸名所図会』に描かれた築土八幡宮と津久戸明神社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.tsukudo.jp/goyuisyo.html',
+      page: '巻之四 天権之部・33ウ34オ',
+      note: '築土八幡宮と津久戸明神社を同じ見開きに描いた挿図。',
+    },
+  ],
+
+  4422: [
+    {
+      url: 'https://www.tsukudo.jp/goyuisyo.jpg',
+      caption: '『江戸名所図会』築土八幡宮・同明神社',
+      alt: '『江戸名所図会』に描かれた築土八幡宮と津久戸明神社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.tsukudo.jp/goyuisyo.html',
+      page: '巻之四 天権之部・33ウ34オ',
+      note: '築土八幡宮と津久戸明神社を同じ見開きに描いた挿図。',
+    },
+  ],
+
+  4424: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/334.jpg',
+      caption: '『江戸名所図会』牛込 神楽坂',
+      alt: '『江戸名所図会』に描かれた牛込神楽坂',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5674',
+      page: '巻之四 天権之部・36ウ37オ',
+      note: '牛込御門の外から神楽坂方面を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
