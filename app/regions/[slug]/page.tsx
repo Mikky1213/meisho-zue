@@ -289,7 +289,17 @@ export default async function RegionPage({
         current?.description?.trim()
       )
 
-    return [
+    const relatedSourcesReady =
+      current?.relatedSourcesPending ===
+      false ||
+      (
+        current?.relatedSourcesPending !==
+          true &&
+        (current?.documents
+          ?.length ?? 0) > 0
+      )
+
+    const statuses: StatusItem[] = [
       {
         label: '原文',
         ready:
@@ -308,35 +318,82 @@ export default async function RegionPage({
         ready: hasCurrentInfo,
       },
       {
-        label: '現地写真',
+        label:
+          current
+            ?.currentPhotoNotApplicable
+            ? '現地写真（対象なし）'
+            : '現地写真',
         ready:
+          Boolean(
+            current
+              ?.currentPhotoNotApplicable
+          ) ||
           (current?.photos
             ?.length ?? 0) > 0,
       },
       {
-        label: '関連史料',
+        label:
+          current
+            ?.relatedSourcesPending
+            ? '関連文献（未追加）'
+            : '関連文献',
         ready:
-          (current?.documents
-            ?.length ?? 0) > 0,
+          relatedSourcesReady,
       },
       {
-        label: '比較',
+        label: '今昔比較',
         ready:
           (current?.comparison
             ?.length ?? 0) > 0,
       },
       {
-        label: '歴史画像',
+        label:
+          current
+            ?.historicalImageNotApplicable
+            ? '歴史画像（挿図なし）'
+            : '歴史画像',
         ready:
+          Boolean(
+            current
+              ?.historicalImageNotApplicable
+          ) ||
           (historicalMedia[
             entryId
           ]?.length ?? 0) > 0,
       },
     ]
+
+    if (
+      current
+        ?.relatedSourcesPending !==
+        undefined ||
+      (current?.documents
+        ?.length ?? 0) > 0 ||
+      (current
+        ?.relatedSourceComparison
+        ?.length ?? 0) > 0
+    ) {
+      statuses.push({
+        label: '文献比較',
+        ready:
+          (current
+            ?.relatedSourceComparison
+            ?.length ?? 0) > 0,
+      })
+    }
+
+    return statuses
   }
 
   const totalChecks =
-    sortedEntries.length * 7
+    sortedEntries.reduce(
+      (total, entry) =>
+        total +
+        statusForEntry(
+          entry.id
+        ).length,
+      0
+    )
 
   const readyChecks =
     sortedEntries.reduce(
