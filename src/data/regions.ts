@@ -97,6 +97,20 @@ export const regions: RegionDefinition[] = [
     ],
   },
   {
+    slug: 'kagurazaka-ushigome',
+    title: '神楽坂・牛込周辺',
+    reading: 'かぐらざか・うしごめしゅうへん',
+    subtitle: '築土から逢坂・神楽坂へ',
+    description:
+      '『江戸名所図会』巻之四で、津久戸明神社・築土八幡宮から逢坂、神楽坂へ続く牛込周辺の名所をまとめます。',
+    entryIds: [
+      4421,
+      4422,
+      4423,
+      4424,
+    ],
+  },
+  {
     slug: 'koishikawa',
     title: '小石川周辺',
     reading: 'こいしかわしゅうへん',
