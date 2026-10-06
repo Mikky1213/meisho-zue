@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4391: CurrentPlace = {
-  currentName: '稲荷山薬王寺',
+  currentName: '稲荷山薬王寺跡（市谷薬王寺町）',
 
-  address: '',
+  address: '東京都新宿区市谷薬王寺町',
 
   description:
-    '『江戸名所図会』に記された河田窪の稲荷山薬王寺。東光院と号し、薬師如来と境内の稲荷祠の由緒を伝える。',
+    '『江戸名所図会』の稲荷山薬王寺（東光院）は現在は廃寺。旧地は現在の市谷薬王寺町にあたり、寺名は町名や薬王寺坂通りに残っている。',
 
   translation: [
     {
@@ -20,5 +20,24 @@ export const meisho4391: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://cdn-ak.f.st-hatena.com/images/fotolife/c/citywalk2020/20240325/20240325191001.jpg',
+      caption: '現在の市谷薬王寺町',
+      alt: '薬王寺の名を残す現在の市谷薬王寺町',
+      credit: '東京散歩ナビ',
+      sourceUrl: 'https://citywalk2020.hatenablog.com/entry/2024/03/28/080000',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '寺院は失われ、地名に「薬王寺」が残る',
+      text: '『江戸名所図会』では、薬師如来を本尊とし、境内に太田道灌勧請と伝える稲荷祠を備えた寺として記される。薬王寺は明治期に廃寺となり、現在その堂宇は残らない。一方、旧地周辺は「市谷薬王寺町」と呼ばれ、薬王寺坂通りにも寺名が受け継がれている。',
+      source: '『江戸名所図会』・日本歴史地名大系「薬王寺跡」',
+      url: 'https://kotobank.jp/word/%E8%96%AC%E7%8E%8B%E5%AF%BA%E8%B7%A1-3043529',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
