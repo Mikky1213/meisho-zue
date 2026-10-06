@@ -352,6 +352,30 @@ export const historicalMedia: Record<
     },
   ],
 
+  4428: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000045/full/full/0/default.jpg',
+      caption: '『江戸名所図会』赤城明神社',
+      alt: '『江戸名所図会』に描かれた牛込の赤城明神社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/info:ndljp/pid/2563390/45',
+      page: '巻之四 天権之部・第十一冊 45コマ',
+      note: '赤城明神社の境内と周辺を描いた挿図。',
+    },
+  ],
+
+  4430: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000047/full/full/0/default.jpg',
+      caption: '『江戸名所図会』済松寺',
+      alt: '『江戸名所図会』に描かれた蔭凉山済松寺',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/info:ndljp/pid/2563390/47',
+      page: '巻之四 天権之部・第十一冊 47コマ',
+      note: '済松寺の広い境内と堂宇、庭園を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
