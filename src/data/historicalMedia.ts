@@ -223,6 +223,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4413: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300416127.jpg',
+      caption: '『江戸名所図会』大宮八幡宮',
+      alt: '『江戸名所図会』に描かれた大宮八幡宮',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5519',
+      page: '巻之四 天権之部',
+      note: '和田村の大宮八幡宮と周辺の境内・参道を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
