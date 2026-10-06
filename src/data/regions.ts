@@ -72,6 +72,17 @@ export const regions: RegionDefinition[] = [
     ],
   },
   {
+    slug: 'hatagaya-inokashira',
+    title: '幡ヶ谷・井の頭周辺',
+    reading: 'はたがや・いのかしらしゅうへん',
+    subtitle: '幡ヶ谷不動から井の頭池へ',
+    description:
+      '『江戸名所図会』巻之四で、幡ヶ谷不動から西へ進み、井の頭・吉祥寺方面へ続く名所をまとめます。',
+    entryIds: [
+      4414,
+    ],
+  },
+  {
     slug: 'koishikawa',
     title: '小石川周辺',
     reading: 'こいしかわしゅうへん',
