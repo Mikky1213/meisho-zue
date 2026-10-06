@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4398: CurrentPlace = {
-  currentName: '鎮護山自証院',
+  currentName: '鎮護山 自證院',
 
-  address: '',
+  address: '東京都新宿区富久町4-5',
 
   description:
-    '『江戸名所図会』に記された鎮護山自証院。自証院殿の菩提寺としての創建、宗派変更、節寺の異名、蜘蛛の井や境内の桜について記す。',
+    '『江戸名所図会』の鎮護山自証院は現在も富久町に所在する天台宗寺院。江戸期に記された「ふし寺」の異名や桜の名所としての記憶も伝えられている。',
 
   translation: [
     {
@@ -27,5 +27,24 @@ export const meisho4398: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://san-tatsu.jp/assets/uploads/2025/12/10091156/1765325502-115763b0e7a2d456f7c2d946d3cb6c44-750x500.jpg',
+      caption: '現在の自證院',
+      alt: '東京都新宿区富久町の自證院',
+      credit: '散歩の達人／交通新聞社',
+      sourceUrl: 'https://san-tatsu.jp/articles/487915/',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '「ふし寺」の記憶を残す現在の自證院',
+      text: '『江戸名所図会』は、節の多い材木で諸堂を建てたため「ふし寺」と呼ばれたこと、境内の蜘蛛の井、桜の古木などを記す。現在も自證院は富久町4-5に所在し、新宿観光振興協会も「ふし寺」「瘤寺」の異名と、かつて桜の名所であったことを紹介している。',
+      source: '『江戸名所図会』・新宿観光振興協会',
+      url: 'https://www.kanko-shinjuku.jp/spot/history/article_383.html',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
