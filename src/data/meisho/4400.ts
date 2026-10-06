@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4400: CurrentPlace = {
-  currentName: '医光山円照寺',
+  currentName: '医光山 瑠璃光院 圓照寺',
 
-  address: '',
+  address: '東京都新宿区北新宿3-23-2',
 
   description:
-    '『江戸名所図会』に記された柏木村の医光山円照寺。薬師如来の由緒、藤原秀郷と平将門の伝承、度重なる兵火と再興、右衛門桜を記す。',
+    '『江戸名所図会』に記された医光山円照寺は、現在も北新宿にある真言宗豊山派の圓照寺。藤原秀郷と薬師如来の伝承を現在の寺も由緒として伝えている。',
 
   translation: [
     {
@@ -36,5 +36,24 @@ export const meisho4400: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://tesshow.jp/shinjuku/images/nshinjuku_ensho1.jpg',
+      caption: '現在の圓照寺',
+      alt: '東京都新宿区北新宿の医光山瑠璃光院圓照寺',
+      credit: '猫の足あと',
+      sourceUrl: 'https://tesshow.jp/shinjuku/temple_nshinjuku_ensho.html',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '藤原秀郷と薬師如来の由緒が現在にも継承',
+      text: '『江戸名所図会』は、藤原秀郷が右肘の病を本尊薬師如来への祈願で癒し、平将門討伐後に堂宇を整えて円照寺としたという伝承を記す。現在の圓照寺も同じ伝承を寺の由緒として紹介しており、本尊薬師如来像も現在まで伝わるとしている。',
+      source: '『江戸名所図会』・圓照寺公式サイト',
+      url: 'https://enshoji.tokyo/about/',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
