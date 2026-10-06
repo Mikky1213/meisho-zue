@@ -51,4 +51,6 @@ export const meisho4393: CurrentPlace = {
   ],
 
   relatedSourcesPending: true,
+
+  historicalImageNotApplicable: true,
 }
