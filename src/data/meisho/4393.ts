@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4393: CurrentPlace = {
-  currentName: '清光山安養寺',
+  currentName: '清光山 林泉院 安養寺',
 
-  address: '',
+  address: '東京都新宿区住吉町10-10',
 
   description:
-    '『江戸名所図会』に記された市谷谷町の清光山安養寺。創建、本尊阿弥陀如来の由緒、白狐の霊異、境内の稲荷祠・八幡宮を記す。',
+    '『江戸名所図会』に記された清光山林泉院安養寺は、現在も住吉町にある浄土宗寺院。本文には本尊阿弥陀如来、白狐の霊異、火防稲荷、境内の八幡宮などの由緒が記される。',
 
   translation: [
     {
@@ -31,5 +31,24 @@ export const meisho4393: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://cdn-ak.f.st-hatena.com/images/fotolife/o/ovanrei/20181212/20181212001833.jpg',
+      caption: '現在の安養寺',
+      alt: '東京都新宿区住吉町の清光山安養寺',
+      credit: 'ovanの社会科見学',
+      sourceUrl: 'https://ovanrei.hatenablog.com/entry/2018/12/11/220000_2',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '明暦期に移った寺地が現在まで続く',
+      text: '『江戸名所図会』は、安養寺がもとは市谷富士見坂付近にあり、明暦2年（1656）に当時の地へ移ったと記す。現在も安養寺は新宿区住吉町10-10に所在し、浄土宗寺院として存続している。江戸期の記事に見える白狐・火防稲荷・八幡宮などの伝承は、現在の境内景観そのものとは分けて確認する必要がある。',
+      source: '『江戸名所図会』・浄土宗寺院検索',
+      url: 'https://otera.jodo.or.jp/temple/13-106/',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
