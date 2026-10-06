@@ -39,6 +39,7 @@ export const regions: RegionDefinition[] = [
     entryIds: [
       4402,
       4403,
+      4404,
       4397,
     ],
   },
