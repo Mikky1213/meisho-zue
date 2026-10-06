@@ -211,6 +211,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4411: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300416207.jpg',
+      caption: '『江戸名所図会』堀之内妙法寺',
+      alt: '『江戸名所図会』に描かれた堀之内妙法寺',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5521',
+      page: '巻之四 天権之部・第十一冊 24ウ25オ',
+      note: '多数の参詣者で賑わう堀之内妙法寺の境内を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
