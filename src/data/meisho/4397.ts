@@ -43,4 +43,6 @@ export const meisho4397: CurrentPlace = {
       url: 'https://www.city.tokyo-nakano.lg.jp/kanko/shigen.files/nakanokuninteikankoshigenarchive.pdf',
     },
   ],
+
+  relatedSourcesPending: true,
 }
