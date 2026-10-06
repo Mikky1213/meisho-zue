@@ -22,6 +22,7 @@ type Props = {
     q?: string
     work?: string
     volume?: string
+    related?: string
   }>
 }
 
@@ -44,6 +45,11 @@ export default async function MeishoListPage({
     typeof params.volume === 'string' && params.volume !== ''
       ? Number(params.volume)
       : null
+
+  const relatedFilter =
+    params.related === 'pending'
+      ? 'pending'
+      : ''
 
   const dbIds = getDbPublishedEntryIds()
 
@@ -189,11 +195,18 @@ export default async function MeishoListPage({
       return false
     }
 
+    const current = currentPlaces[entry.id]
+
+    if (
+      relatedFilter === 'pending' &&
+      !current?.relatedSourcesPending
+    ) {
+      return false
+    }
+
     if (!normalizedQuery) {
       return true
     }
-
-    const current = currentPlaces[entry.id]
 
     return [
       entry.heading,
@@ -344,6 +357,17 @@ export default async function MeishoListPage({
                 ))}
             </select>
 
+            <select
+              name="related"
+              defaultValue={relatedFilter}
+              style={{ padding: '11px 12px' }}
+            >
+              <option value="">関連文献：すべて</option>
+              <option value="pending">
+                関連文献：未追加のみ
+              </option>
+            </select>
+
             <button type="submit">絞り込む</button>
           </div>
         </form>
@@ -462,6 +486,24 @@ export default async function MeishoListPage({
                                   >
                                     {entry.heading}
                                   </h3>
+
+                                  {current?.relatedSourcesPending && (
+                                    <div
+                                      style={{
+                                        display: 'inline-block',
+                                        marginTop: '12px',
+                                        padding: '3px 8px',
+                                        border: '1px solid #c9aa7b',
+                                        borderRadius: '999px',
+                                        background: '#fff8ea',
+                                        color: '#7b5b2e',
+                                        fontSize: '0.72rem',
+                                        fontWeight: 600,
+                                      }}
+                                    >
+                                      関連文献未追加
+                                    </div>
+                                  )}
 
                                   {current?.currentName &&
                                     current.currentName !==
