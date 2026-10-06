@@ -19,11 +19,11 @@ export const meisho4419: CurrentPlace = {
 
   photos: [
     {
-      url: 'https://honmokujack.blog.jp/archives/20651704.html',
+      url: 'https://shirobito.jp/assets/img/upload/mouth/2025/07/7266_e5199e90eeeb4f62f51a1c4c8ae1f025.JPG',
       caption: '現在の牛込城跡・光照寺境内',
       alt: '東京都新宿区袋町の光照寺境内にある牛込城跡',
-      credit: '本牧jack',
-      sourceUrl: 'https://honmokujack.blog.jp/archives/20651704.html',
+      credit: '城びと',
+      sourceUrl: 'https://shirobito.jp/castle/918',
     },
   ],
 
