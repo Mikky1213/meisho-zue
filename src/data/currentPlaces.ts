@@ -14,6 +14,7 @@ import { meisho4402 } from './meisho/4402'
 import { meisho4403 } from './meisho/4403'
 import { meisho4404 } from './meisho/4404'
 import { meisho4405 } from './meisho/4405'
+import { meisho4406 } from './meisho/4406'
 import { meisho4495 } from './meisho/4495'
 import { meisho4496 } from './meisho/4496'
 import { meisho4497 } from './meisho/4497'
@@ -122,6 +123,7 @@ export const currentPlaces: Record<number, CurrentPlace> = {
   4403: meisho4403,
   4404: meisho4404,
   4405: meisho4405,
+  4406: meisho4406,
   4495: meisho4495,
   4496: meisho4496,
   4497: meisho4497,
