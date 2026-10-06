@@ -68,6 +68,7 @@ export const regions: RegionDefinition[] = [
       '『江戸名所図会』巻之四で、堀ノ内の妙法寺から和田・大宮周辺へ続く名所をまとめます。',
     entryIds: [
       4411,
+      4413,
     ],
   },
   {
