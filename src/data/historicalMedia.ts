@@ -22,6 +22,18 @@ export const historicalMedia: Record<
   number,
   HistoricalImage[]
 > = {
+  4397: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
+      caption: '『江戸名所図会』成願寺',
+      alt: '『江戸名所図会』に描かれた成願寺と中野長者の墓',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5560',
+      page: '巻之四 天権之部',
+      note: '成願寺境内を描いた挿図。図中に「中埜長者墓」と示され、中野長者鈴木九郎の墓所が描き込まれている。',
+    },
+  ],
+
   4498: [
     {
       url: kishimojinHomyojiImageUrl,
