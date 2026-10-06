@@ -199,6 +199,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4408: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418133.jpg',
+      caption: '『江戸名所図会』桃園 春興',
+      alt: '『江戸名所図会』に描かれた春の桃園',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5563',
+      page: '巻之四 天権之部',
+      note: '紅白の桃が咲く中野の桃園と花見の様子を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
