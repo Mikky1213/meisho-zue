@@ -87,7 +87,15 @@ export type CurrentPlace = {
 
   comparison?: ComparisonItem[]
 
+  relatedSourceComparison?: ComparisonItem[]
+
   translation?: TranslationItem[]
+
+  relatedSourcesPending?: boolean
+
+  currentPhotoNotApplicable?: boolean
+
+  historicalImageNotApplicable?: boolean
 
   sourceEntry?: SourceEntryLink
 }
