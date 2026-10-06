@@ -316,6 +316,42 @@ export const historicalMedia: Record<
     },
   ],
 
+  4425: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000043/full/full/0/default.jpg',
+      caption: '『江戸名所図会』松源寺・行元寺・若宮八幡宮',
+      alt: '『江戸名所図会』に描かれた松源寺・行元寺・若宮八幡宮',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/info:ndljp/pid/2563390/43',
+      page: '巻之四 天権之部・第十一冊 43コマ',
+      note: '若宮八幡宮、行元寺、松源寺を一続きの景観として描いた挿図。',
+    },
+  ],
+
+  4418: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000043/full/full/0/default.jpg',
+      caption: '『江戸名所図会』松源寺・行元寺・若宮八幡宮',
+      alt: '『江戸名所図会』に描かれた松源寺・行元寺・若宮八幡宮',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/info:ndljp/pid/2563390/43',
+      page: '巻之四 天権之部・第十一冊 43コマ',
+      note: '若宮八幡宮、行元寺、松源寺を一続きの景観として描いた挿図。',
+    },
+  ],
+
+  4412: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000043/full/full/0/default.jpg',
+      caption: '『江戸名所図会』松源寺・行元寺・若宮八幡宮',
+      alt: '『江戸名所図会』に描かれた松源寺・行元寺・若宮八幡宮',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/info:ndljp/pid/2563390/43',
+      page: '巻之四 天権之部・第十一冊 43コマ',
+      note: '若宮八幡宮、行元寺、松源寺を一続きの景観として描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
