@@ -1,11 +1,44 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4402: CurrentPlace = {
-  currentName: "淀橋",
+  currentName: '淀橋',
 
-  address: '',
+  address: '東京都新宿区北新宿2丁目・中野区境（神田川・青梅街道）',
 
-  description: '',
+  description:
+    '『江戸名所図会』の「淀橋」は、現在も同じ名で残る橋。新宿区と中野区の境を流れる神田川に、青梅街道が渡る地点に架かる。江戸時代から知られた橋名は、のちに周辺の町名・区名にも用いられた。',
 
-  photos: [],
+  translation: [
+    {
+      title: '現代語訳',
+      text: `淀橋は、成子宿と中野村との間に架かっている。大小二つの橋があり、橋のこちら側には水車がある。
+
+昔、将軍家がこのあたりで鷹狩りをしたとき、山城国の淀になぞらえて、この橋を「淀橋」と呼ぶようにとの上意があった。そのため、この名になったという。
+
+ある人は、「淀橋は、もとは余戸橋だったのではないか」と言っている。『和名抄』には、「武蔵国豊島郡に余戸という村がある。この地は豊島郡と多摩郡との中間にあり、古代の『あまりべ』にあたる土地であったため、余戸橋と呼ばれたのではないか」とある。しかし、その説が正しいかどうかは分からない。
+
+古くは「面影の橋」「姿見ずの橋」などとも呼ばれていたという。`,
+    },
+  ],
+
+  photos: [
+    {
+      url: 'https://bunkakanko-annai.city.shinjuku.lg.jp/pic/jpeg/thumb/I907/S_I907-001.jpg',
+      caption: '現在の淀橋',
+      alt: '神田川に架かる現在の淀橋',
+      credit: '新宿区「温故知しん！じゅく散歩」',
+      sourceUrl: 'https://bunkakanko-annai.city.shinjuku.lg.jp/shosai3/?id=I907',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '水車のある郊外の橋から都市の幹線道路へ',
+      text: '『江戸名所図会』では、淀橋を成子宿と中野村の間に架かる橋として記し、近くに水車があること、橋名の由来に山城国の淀・余戸橋など複数の説があること、さらに「面影の橋」「姿見ずの橋」という旧名を伝えている。現在も淀橋は新宿区と中野区の境の神田川に架かり、青梅街道を通す橋として同じ場所に存続する。一方、挿図に描かれた水車や田園的な景観は失われ、周囲は市街地となっている。',
+      source: '『江戸名所図会』・新宿区・東京都立図書館',
+      url: 'https://bunkakanko-annai.city.shinjuku.lg.jp/shosai3/?id=I907',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
