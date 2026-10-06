@@ -1795,38 +1795,6 @@ export default async function MeishoPage({
                 </div>
               )}
 
-            {currentPlace.relatedSourcesPending &&
-              (!currentPlace.documents ||
-                currentPlace.documents.length === 0) && (
-                <div
-                  style={{
-                    marginTop: '32px',
-                    paddingTop: '28px',
-                    borderTop: '1px solid #cbd8d4',
-                  }}
-                >
-                  <h3
-                    style={{
-                      margin: '0 0 12px',
-                      fontSize: '1.15rem',
-                    }}
-                  >
-                    関連文献・資料
-                  </h3>
-
-                  <div
-                    style={{
-                      padding: '16px 18px',
-                      border: '1px dashed #c9bfae',
-                      borderRadius: '8px',
-                      background: '#fbf8f1',
-                      color: '#766d61',
-                    }}
-                  >
-                    関連文献は未追加です。後から追加する対象として登録されています。
-                  </div>
-                </div>
-              )}
           </div>
         ) : (
           <div
