@@ -1,3 +1,13 @@
+import { meisho4390 } from './meisho/4390'
+import { meisho4391 } from './meisho/4391'
+import { meisho4392 } from './meisho/4392'
+import { meisho4393 } from './meisho/4393'
+import { meisho4394 } from './meisho/4394'
+import { meisho4395 } from './meisho/4395'
+import { meisho4396 } from './meisho/4396'
+import { meisho4398 } from './meisho/4398'
+import { meisho4399 } from './meisho/4399'
+import { meisho4400 } from './meisho/4400'
 import { meisho4495 } from './meisho/4495'
 import { meisho4496 } from './meisho/4496'
 import { meisho4497 } from './meisho/4497'
@@ -82,6 +92,16 @@ export type CurrentPlace = {
 }
 
 export const currentPlaces: Record<number, CurrentPlace> = {
+  4390: meisho4390,
+  4391: meisho4391,
+  4392: meisho4392,
+  4393: meisho4393,
+  4394: meisho4394,
+  4395: meisho4395,
+  4396: meisho4396,
+  4398: meisho4398,
+  4399: meisho4399,
+  4400: meisho4400,
   4495: meisho4495,
   4496: meisho4496,
   4497: meisho4497,
