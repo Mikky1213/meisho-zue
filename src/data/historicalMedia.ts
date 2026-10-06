@@ -376,6 +376,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4431: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000047/full/full/0/default.jpg',
+      caption: '『江戸名所図会』済松寺',
+      alt: '大友義延旧館跡とされる済松寺を描いた『江戸名所図会』挿図',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/info:ndljp/pid/2563390/47',
+      page: '巻之四 天権之部・第十一冊 47コマ',
+      note: '本文が大友義延旧館跡とする済松寺の境内を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
