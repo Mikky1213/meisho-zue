@@ -139,6 +139,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4403: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/353.jpg',
+      caption: '『江戸名所図会』角筈村 熊野十二所権現社',
+      alt: '『江戸名所図会』に描かれた角筈村の熊野十二所権現社',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5693',
+      page: '巻之四 天権之部',
+      note: '角筈村の熊野十二所権現社と周辺の景観を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
