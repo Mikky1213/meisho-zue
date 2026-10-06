@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4390: CurrentPlace = {
-  currentName: '市谷八幡宮',
+  currentName: '市谷亀岡八幡宮',
 
-  address: '',
+  address: '東京都新宿区市谷八幡町15',
 
   description:
-    '『江戸名所図会』巻之四の冒頭に置かれた市谷八幡宮の記事。社殿・祭神・茶木稲荷の由緒、太田道灌による勧請、兵火後の再興、桂昌院による神輿奉納までを記す。',
+    '『江戸名所図会』の「市谷八幡宮」は、現在の市谷亀岡八幡宮。太田道灌が江戸城西方の守護として鶴岡八幡宮を勧請したと伝わり、寛永年間に現在地へ移った。現在の社殿は戦災後の昭和37年（1962）再建。',
 
   translation: [
     {
@@ -33,5 +33,24 @@ export const meisho4390: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://san-tatsu.jp/assets/uploads/2021/05/04154414/1764830639-6bba9bc054aef2e9a79ef5c90ffb4936.jpg',
+      caption: '現在の市谷亀岡八幡宮',
+      alt: '市谷亀岡八幡宮の社殿',
+      credit: '散歩の達人／交通新聞社',
+      sourceUrl: 'https://san-tatsu.jp/articles/486297/',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '江戸の市谷八幡から現在の亀岡八幡宮へ',
+      text: '『江戸名所図会』は、太田道灌による勧請、寛永年間の移転、茶木稲荷、道灌松などを記す。現在も同じ高台に市谷亀岡八幡宮が鎮座し、茶ノ木稲荷神社も境内に祀られている。一方、社殿は昭和20年（1945）の空襲で全焼し、昭和37年（1962）に再建された。江戸期の建物そのものではないが、社地と信仰は現在まで継承されている。',
+      source: '『江戸名所図会』・市谷亀岡八幡宮公式サイト',
+      url: 'https://ichigayahachiman.or.jp/engi/hachiman/',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
