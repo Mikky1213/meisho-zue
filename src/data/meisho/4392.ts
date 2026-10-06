@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4392: CurrentPlace = {
-  currentName: '正覚山月桂寺',
+  currentName: '正覚山 月桂寺',
 
-  address: '',
+  address: '東京都新宿区河田町2-5',
 
   description:
-    '『江戸名所図会』に記された正覚山月桂寺。円覚寺末の禅寺で、喜連川家の香華院とされ、安産宝珠の由緒も載せる。',
+    '『江戸名所図会』に記された正覚山月桂寺は現在も河田町に所在する臨済宗円覚寺派の寺院。江戸期には喜連川家の香華院とされ、安産宝珠の由緒も紹介された。',
 
   translation: [
     {
@@ -24,5 +24,24 @@ export const meisho4392: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Gekkei-ji%20(Shinjuku).JPG',
+      caption: '現在の月桂寺',
+      alt: '東京都新宿区河田町の月桂寺',
+      credit: 'あばさー / Wikimedia Commons',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Gekkei-ji_(Shinjuku).JPG',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '江戸期から同地に続く月桂寺',
+      text: '『江戸名所図会』は、月桂寺を円覚寺末の禅寺・喜連川家の香華院として記し、本尊や安産宝珠の由緒を紹介する。現在も河田町2-5に月桂寺が所在しており、寺院としての連続性が確認できる。現在の境内には新宿区登録文化財の切支丹灯籠なども伝わる。',
+      source: '『江戸名所図会』・新宿区',
+      url: 'https://www.regasu-shinjuku.or.jp/rekihaku/collection/shinjuku-collection/rekishishiryo/486/',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
