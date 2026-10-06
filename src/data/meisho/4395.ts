@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4395: CurrentPlace = {
-  currentName: '大窪天満宮',
+  currentName: '西向天神社',
 
-  address: '',
+  address: '東京都新宿区新宿6-21-1',
 
   description:
-    '『江戸名所図会』に記された大窪天満宮。棗の天神・西向きの天神とも呼ばれ、その勧請、兵火後の再興、別当大聖院の由緒を伝える。',
+    '『江戸名所図会』の「大窪天満宮」は、現在の西向天神社。江戸期にも「西向きの天神」と呼ばれ、東大久保の鎮守として信仰された。',
 
   translation: [
     {
@@ -25,5 +25,24 @@ export const meisho4395: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Nishi-muki-Tenjin-sha,%20Shinjuku%2008.jpg',
+      caption: '現在の西向天神社',
+      alt: '東京都新宿区新宿の西向天神社',
+      credit: 'Wikimedia Commons',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Nishi-muki-Tenjin-sha,_Shinjuku_08.jpg',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '「西向きの天神」の名が現在の社名に残る',
+      text: '『江戸名所図会』は大窪天満宮を「棗の天神」「西向きの天神」とも呼ぶと記している。現在は西向天神社の名で新宿6丁目に鎮座し、東大久保村の鎮守としての由緒を伝える。江戸期に記された西向きの社殿という特徴が、現在の社名そのものに受け継がれている。',
+      source: '『江戸名所図会』・新宿区',
+      url: 'https://www.city.shinjuku.lg.jp/m/jisya00029.php',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
