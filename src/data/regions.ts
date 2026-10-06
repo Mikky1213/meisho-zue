@@ -48,6 +48,17 @@ export const regions: RegionDefinition[] = [
     ],
   },
   {
+    slug: 'koenji-asagaya',
+    title: '高円寺・阿佐谷周辺',
+    reading: 'こうえんじ・あさがやしゅうへん',
+    subtitle: '桃園の旧地から阿佐谷へ',
+    description:
+      '『江戸名所図会』巻之四で、中野の桃園から西へ進み、高円寺・阿佐谷周辺に続く名所をまとめます。',
+    entryIds: [
+      4409,
+    ],
+  },
+  {
     slug: 'koishikawa',
     title: '小石川周辺',
     reading: 'こいしかわしゅうへん',
