@@ -259,6 +259,27 @@ export const historicalMedia: Record<
     },
   ],
 
+  4420: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300419016.jpg',
+      caption: '『江戸名所図会』小金井橋',
+      alt: '『江戸名所図会』に描かれた小金井橋',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5594',
+      page: '巻之四 天権之部',
+      note: '玉川上水に架かる小金井橋と周辺の桜を描いた挿図。',
+    },
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300419008.jpg',
+      caption: '『江戸名所図会』小金井橋 春景',
+      alt: '『江戸名所図会』に描かれた小金井橋周辺の春景',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5593',
+      page: '巻之四 天権之部',
+      note: '小金井橋を中心に玉川上水両岸へ広がる桜並木を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
