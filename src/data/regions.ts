@@ -27,7 +27,19 @@ export const regions: RegionDefinition[] = [
       4399,
       4400,
       4401,
+    ],
+  },
+  {
+    slug: 'yodobashi-nakano',
+    title: '淀橋・中野周辺',
+    reading: 'よどばし・なかのしゅうへん',
+    subtitle: '淀橋から十二社・中野長者ゆかりの地へ',
+    description:
+      '『江戸名所図会』巻之四で、柏木の西から淀橋を渡り、角筈の十二所権現社、中野長者ゆかりの名所へ続く一帯をまとめます。',
+    entryIds: [
       4402,
+      4403,
+      4397,
     ],
   },
   {
