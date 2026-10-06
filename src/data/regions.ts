@@ -60,6 +60,17 @@ export const regions: RegionDefinition[] = [
     ],
   },
   {
+    slug: 'horinouchi-omiya',
+    title: '堀ノ内・大宮周辺',
+    reading: 'ほりのうち・おおみやしゅうへん',
+    subtitle: '厄除け祖師から大宮八幡宮へ',
+    description:
+      '『江戸名所図会』巻之四で、堀ノ内の妙法寺から和田・大宮周辺へ続く名所をまとめます。',
+    entryIds: [
+      4411,
+    ],
+  },
+  {
     slug: 'koishikawa',
     title: '小石川周辺',
     reading: 'こいしかわしゅうへん',
