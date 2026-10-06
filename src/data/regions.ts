@@ -9,6 +9,26 @@ export type RegionDefinition = {
 
 export const regions: RegionDefinition[] = [
   {
+    slug: 'ichigaya-okubo',
+    title: '市谷・大久保周辺',
+    reading: 'いちがや・おおくぼしゅうへん',
+    subtitle: '市谷八幡宮から大久保・柏木へ',
+    description:
+      '『江戸名所図会』巻之四の冒頭、市谷八幡宮から河田窪・大久保・四谷北寺町・柏木へ続く名所をまとめます。',
+    entryIds: [
+      4390,
+      4391,
+      4392,
+      4393,
+      4394,
+      4395,
+      4396,
+      4398,
+      4399,
+      4400,
+    ],
+  },
+  {
     slug: 'koishikawa',
     title: '小石川周辺',
     reading: 'こいしかわしゅうへん',
