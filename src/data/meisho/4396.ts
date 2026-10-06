@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4396: CurrentPlace = {
-  currentName: '七面大明神社',
+  currentName: '春時山 法善寺（七面明神像）',
 
-  address: '',
+  address: '東京都新宿区新宿6-20-16',
 
   description:
-    '『江戸名所図会』に記された七面大明神社。法善寺に安置された七面尊の由来、三沢氏の伝承、祭礼と常経読誦について記す。',
+    '『江戸名所図会』の七面大明神社そのものは独立した社としては残らないが、神体とされる七面明神像は現在も春時山法善寺に伝わり、新宿区指定有形文化財となっている。',
 
   translation: [
     {
@@ -23,5 +23,24 @@ export const meisho4396: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hozenji%20temple%20shinjuku.jpg',
+      caption: '現在の春時山法善寺',
+      alt: '七面明神像を伝える東京都新宿区の法善寺',
+      credit: 'Tengusabaki / Wikimedia Commons',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hozenji_temple_shinjuku.jpg',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '七面大明神社から法善寺の七面明神像へ',
+      text: '『江戸名所図会』は、法善寺に安置された七面尊を江戸で最初に勧請された七面宮とし、日護上人作と伝える。現在、独立した「七面大明神社」は残らないが、日護上人作と伝わる七面明神像は法善寺本堂に保存され、新宿区指定有形文化財となっている。場所と尊像の信仰は形を変えながら継承された。',
+      source: '『江戸名所図会』・新宿歴史博物館',
+      url: 'https://www.regasu-shinjuku.or.jp/rekihaku/collection/shinjuku-collection/chokoku/181/',
+    },
+  ],
+
+  relatedSourcesPending: true,
 }
