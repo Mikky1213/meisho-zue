@@ -151,6 +151,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4404: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
+      caption: '『江戸名所図会』成願寺',
+      alt: '『江戸名所図会』に描かれた多宝山成願禅寺',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5560',
+      page: '巻之四 天権之部',
+      note: '成願寺境内を描いた挿図。境内の堂宇や中野長者墓が描き込まれている。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
