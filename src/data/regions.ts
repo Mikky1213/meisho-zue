@@ -27,6 +27,7 @@ export const regions: RegionDefinition[] = [
       4399,
       4400,
       4401,
+      4402,
     ],
   },
   {
