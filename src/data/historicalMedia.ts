@@ -24,11 +24,11 @@ export const historicalMedia: Record<
 > = {
   4390: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/00.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000006/full/full/0/default.jpg',
       caption: '『江戸名所図会』市谷八幡宮',
       alt: '『江戸名所図会』に描かれた市谷八幡宮',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/6',
       page: '巻之四 天権之部・第十一冊 4-11-6',
       note: '市谷八幡宮の境内を描いた挿図。',
     },
@@ -36,11 +36,11 @@ export const historicalMedia: Record<
 
   4391: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/1.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000008/full/full/0/default.jpg',
       caption: '『江戸名所図会』薬王寺・月桂寺',
       alt: '『江戸名所図会』に描かれた稲荷山薬王寺と正覚山月桂寺',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/8',
       page: '巻之四 天権之部・第十一冊 4-11-8',
       note: '稲荷山薬王寺と正覚山月桂寺を一続きに描いた挿図。',
     },
@@ -48,11 +48,11 @@ export const historicalMedia: Record<
 
   4392: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/1.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000008/full/full/0/default.jpg',
       caption: '『江戸名所図会』薬王寺・月桂寺',
       alt: '『江戸名所図会』に描かれた稲荷山薬王寺と正覚山月桂寺',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/8',
       page: '巻之四 天権之部・第十一冊 4-11-8',
       note: '稲荷山薬王寺と正覚山月桂寺を一続きに描いた挿図。',
     },
@@ -60,11 +60,11 @@ export const historicalMedia: Record<
 
   4395: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/2.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000010/full/full/0/default.jpg',
       caption: '『江戸名所図会』大窪天満宮',
       alt: '『江戸名所図会』に描かれた大窪天満宮',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/10',
       page: '巻之四 天権之部・第十一冊 4-11-10',
       note: '現在の西向天神社にあたる大窪天満宮の境内を描いた挿図。',
     },
@@ -72,11 +72,11 @@ export const historicalMedia: Record<
 
   4396: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/3.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000011/full/full/0/default.jpg',
       caption: '『江戸名所図会』大久保七面宮',
       alt: '『江戸名所図会』に描かれた大久保の七面大明神社',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/11',
       page: '巻之四 天権之部・第十一冊 4-11-11',
       note: '法善寺に祀られた七面大明神社を描いた挿図。',
     },
@@ -84,11 +84,11 @@ export const historicalMedia: Record<
 
   4398: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/6.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000014/full/full/0/default.jpg',
       caption: '『江戸名所図会』自證院',
       alt: '『江戸名所図会』に描かれた鎮護山自證院',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/14',
       page: '巻之四 天権之部・第十一冊 4-11-14',
       note: '鎮護山自證院の境内を描いた挿図。',
     },
@@ -96,13 +96,22 @@ export const historicalMedia: Record<
 
   4400: [
     {
-      url: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/img-11/small/7.jpg',
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000015/full/full/0/default.jpg',
       caption: '『江戸名所図会』鎧明神社・円照寺',
       alt: '『江戸名所図会』に描かれた鎧明神社と医光山円照寺',
       source: '『江戸名所図会』',
-      sourceUrl: 'https://www.benricho.org/Unchiku/Ukiyoe_NIshikie/edo-meisyozue/11.html',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/15',
       page: '巻之四 天権之部・第十一冊 4-11-15',
       note: '鎧明神社・円照寺と右衛門桜を描いた挿図。',
+    },
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000016/full/full/0/default.jpg',
+      caption: '『江戸名所図会』柏木村 右衛門桜',
+      alt: '『江戸名所図会』に描かれた柏木村の右衛門桜',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/16',
+      page: '巻之四 天権之部・第十一冊 4-11-16',
+      note: '医光山円照寺の子項目「右衛門桜」に対応する挿図。',
     },
   ],
 
