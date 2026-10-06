@@ -1,12 +1,12 @@
 import type { CurrentPlace } from '../currentPlaces'
 
 export const meisho4394: CurrentPlace = {
-  currentName: '七宝山薬王寺',
+  currentName: '七宝山薬王寺跡',
 
-  address: '',
+  address: '東京都新宿区（旧市谷谷町付近）',
 
   description:
-    '『江戸名所図会』に記された七宝山薬王寺。黄檗宗への再興と凌雲禅師の事績、境内の一木薬師如来の由緒を載せる。',
+    '『江戸名所図会』に記された黄檗宗七宝山薬王寺は現存しない。東京大学の寺社境内変容研究では、市区改正期の廃寺に分類されている。旧地の現代の一点への比定は、今後関連史料を加えて精査する。',
 
   translation: [
     {
@@ -23,4 +23,19 @@ export const meisho4394: CurrentPlace = {
   ],
 
   photos: [],
+
+  comparison: [
+    {
+      title: '江戸期の黄檗宗寺院は現存しない',
+      text: '『江戸名所図会』では、衰退して草庵となっていた古寺を凌雲禅師が元禄頃に黄檗宗寺院として再興し、境内に一木薬師如来を安置したと記す。現在、七宝山薬王寺そのものは残っておらず、市区改正期に廃寺となった寺院として整理されている。旧地の正確な現代比定は関連史料追加時に改めて確認する。',
+      source: '『江戸名所図会』・東京大学学位論文',
+      url: 'https://repository.dl.itc.u-tokyo.ac.jp/record/2012733/files/A41348.pdf',
+    },
+  ],
+
+  relatedSourcesPending: true,
+
+  currentPhotoNotApplicable: true,
+
+  historicalImageNotApplicable: true,
 }
