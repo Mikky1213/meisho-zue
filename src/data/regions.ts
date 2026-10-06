@@ -56,6 +56,7 @@ export const regions: RegionDefinition[] = [
       '『江戸名所図会』巻之四で、中野の桃園から西へ進み、高円寺・阿佐谷周辺に続く名所をまとめます。',
     entryIds: [
       4409,
+      4410,
     ],
   },
   {
