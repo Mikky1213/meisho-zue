@@ -187,6 +187,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4407: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418123.jpg',
+      caption: '『江戸名所図会』中野宝仙寺',
+      alt: '『江戸名所図会』に描かれた中野の宝仙寺',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5562',
+      page: '巻之四 天権之部',
+      note: '宝仙寺の境内と堂宇を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
