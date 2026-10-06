@@ -25,5 +25,22 @@ export const meisho4397: CurrentPlace = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      url: 'https://www.nakano-kanko.com/wp-content/uploads/IMG_5607.jpg',
+      caption: '鈴木九郎宝篋印塔',
+      alt: '成願寺境内にある鈴木九郎宝篋印塔',
+      credit: '中野区観光協会',
+      sourceUrl: 'https://www.nakano-kanko.com/citywalk/walking-course-3/',
+    },
+  ],
+
+  comparison: [
+    {
+      title: '江戸時代の墓塔から現在の宝篋印塔へ',
+      text: '『江戸名所図会』では、鈴木九郎の石塔はすでに崩れ、半ば土中に埋もれていたと記される。現在、成願寺本堂手前左側には鈴木九郎の墓とされる宝篋印塔が建つ。中野区によれば、現在の塔は昭和20年（1945）の空襲による焼損後に再建されたものである。',
+      source: '『江戸名所図会』・中野区',
+      url: 'https://www.city.tokyo-nakano.lg.jp/kanko/shigen.files/nakanokuninteikankoshigenarchive.pdf',
+    },
+  ],
 }
