@@ -23,11 +23,11 @@ export const meisho4402: CurrentPlace = {
 
   photos: [
     {
-      url: 'https://bunkakanko-annai.city.shinjuku.lg.jp/pic/jpeg/thumb/I907/S_I907-001.jpg',
+      url: 'https://cdn.4travel.jp/img/thumbnails/imk/tips_pict/16/77/99/650x450_16779903.jpg?updated_at=1569062554',
       caption: '現在の淀橋',
       alt: '神田川に架かる現在の淀橋',
-      credit: '新宿区「温故知しん！じゅく散歩」',
-      sourceUrl: 'https://bunkakanko-annai.city.shinjuku.lg.jp/shosai3/?id=I907',
+      credit: 'フォートラベル',
+      sourceUrl: 'https://4travel.jp/dm_shisetsu/11615951',
     },
   ],
 
