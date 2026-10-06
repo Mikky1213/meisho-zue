@@ -115,6 +115,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4401: [
+    {
+      url: 'https://www.dl.ndl.go.jp/api/iiif/2563390/R0000015/full/full/0/default.jpg',
+      caption: '『江戸名所図会』鎧明神社・円照寺',
+      alt: '『江戸名所図会』に描かれた鎧明神社と医光山円照寺',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://dl.ndl.go.jp/pid/2563390/1/15',
+      page: '巻之四 天権之部・第十一冊 4-11-15',
+      note: '円照寺と鎧明神社を描いた挿図。上段に鎧明神社、下段に円照寺が描かれている。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
