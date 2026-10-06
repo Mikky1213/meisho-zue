@@ -175,6 +175,18 @@ export const historicalMedia: Record<
     },
   ],
 
+  4406: [
+    {
+      url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418109.jpg',
+      caption: '『江戸名所図会』中野塔',
+      alt: '『江戸名所図会』に描かれた中野の三層塔',
+      source: '『江戸名所図会』',
+      sourceUrl: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/modal/index.html?d=5561',
+      page: '巻之四 天権之部',
+      note: '本文で「七塔の一ならんか」と推測されている中野の三層塔を描いた挿図。',
+    },
+  ],
+
   4397: [
     {
       url: 'https://www.library.metro.tokyo.lg.jp/portals/0/edo/tokyo_library/upimage/big/1300418098.jpg',
